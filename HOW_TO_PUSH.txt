@@ -1,0 +1,86 @@
+═══════════════════════════════════════════════════════════
+  HOW TO PUSH CLEAN FITFORM PROJECT TO GITHUB
+═══════════════════════════════════════════════════════════
+
+This will create a completely fresh repository with only project files.
+All old commits and helper scripts will be removed.
+
+───────────────────────────────────────────────────────────
+METHOD 1: Using PowerShell Script (RECOMMENDED)
+───────────────────────────────────────────────────────────
+
+1. Open File Explorer
+2. Navigate to: C:\Users\user\AndroidStudioProjects\FitForm
+3. RIGHT-CLICK on: fresh-push.ps1
+4. Select: "Run with PowerShell"
+5. When prompted for credentials:
+   Username: Elvin66635
+   Password: [paste your token]
+
+Done! The script will do everything automatically.
+
+───────────────────────────────────────────────────────────
+METHOD 2: Manual Commands
+───────────────────────────────────────────────────────────
+
+1. Open PowerShell (Win + X → Windows PowerShell)
+
+2. Navigate to project:
+   cd C:\Users\user\AndroidStudioProjects\FitForm
+
+3. Remove old Git history:
+   Remove-Item -Recurse -Force .git
+
+4. Remove helper scripts:
+   Remove-Item -Force reset-and-push.bat, fresh-push.ps1, HOW_TO_PUSH.txt
+
+5. Initialize fresh repository:
+   git init
+   git config --local user.name "Элвин Ибрагимов"
+   git config --local user.email "elvin.ibragimov.9757@gmail.com"
+
+6. Add all files:
+   git add .
+
+7. Create initial commit:
+   git commit -m "Initial commit: FitForm Android fitness app with AI pose detection"
+
+8. Setup GitHub remote:
+   git branch -M main
+   git remote add origin https://github.com/Elvin66635/FitForm.git
+
+9. Force push (replaces all history):
+   git push -f origin main
+
+10. Enter credentials:
+    Username: Elvin66635
+    Password: [your token]
+
+═══════════════════════════════════════════════════════════
+  WHAT WILL REMAIN IN REPOSITORY:
+═══════════════════════════════════════════════════════════
+
+✓ app/ - application source code
+✓ gradle/ - Gradle wrapper
+✓ .gitignore
+✓ README.md
+✓ build.gradle.kts
+✓ settings.gradle.kts
+✓ gradle.properties
+
+❌ All .bat, .ps1, .txt helper files - REMOVED
+❌ All old commits - REMOVED
+❌ Clean history with ONE commit
+
+═══════════════════════════════════════════════════════════
+  AFTER SUCCESSFUL PUSH:
+═══════════════════════════════════════════════════════════
+
+1. Refresh: https://github.com/Elvin66635/FitForm
+2. You should see only project files
+3. Only 1 commit in history
+4. Clean, professional repository!
+
+Done! 🎉
+
+
