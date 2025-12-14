@@ -27,6 +27,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import com.fitform.ai.R
 import com.fitform.ai.domain.model.*
 import com.fitform.ai.ui.theme.*
 import com.fitform.ai.ui.util.*
@@ -61,7 +63,7 @@ fun HomeScreen(
         }
         item {
             SectionHeader(
-                title = "Рекомендуемые упражнения",
+                title = LocalContext.current.getString(R.string.home_recommended),
                 onSeeAll = onNavigateToExercises
             )
         }
@@ -80,14 +82,14 @@ fun HomeScreen(
         }
         item {
             SectionHeader(
-                title = "Программы тренировок",
+                title = LocalContext.current.getString(R.string.home_programs),
                 onSeeAll = onNavigateToPrograms
             )
         }
         items(programs) { program ->
             ProgramCard(
                 program = program,
-                onClick = { }
+                onClick = { onNavigateToPrograms() }
             )
         }
         item {
@@ -98,16 +100,17 @@ fun HomeScreen(
 
 @Composable
 private fun HomeHeader() {
+    val context = LocalContext.current
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
-            text = "Привет! 👋",
+            text = context.getString(R.string.home_greeting),
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
             color = TextPrimary
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = "Готов к тренировке?",
+            text = context.getString(R.string.home_ready_question),
             fontSize = 16.sp,
             color = TextSecondary
         )
@@ -116,6 +119,7 @@ private fun HomeHeader() {
 
 @Composable
 private fun StatsSection(stats: WorkoutStats) {
+    val context = LocalContext.current
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -124,21 +128,21 @@ private fun StatsSection(stats: WorkoutStats) {
             modifier = Modifier.weight(1f),
             icon = Icons.Default.TrendingUp,
             value = stats.thisWeekWorkouts.toString(),
-            label = "На этой неделе",
+            label = context.getString(R.string.home_workouts),
             iconColor = Primary
         )
         StatCard(
             modifier = Modifier.weight(1f),
             icon = Icons.Default.LocalFireDepartment,
             value = stats.totalCalories.toString(),
-            label = "Калорий",
+            label = context.getString(R.string.home_calories),
             iconColor = Primary
         )
         StatCard(
             modifier = Modifier.weight(1f),
             icon = Icons.Default.Timer,
             value = "${stats.totalMinutes}",
-            label = "Минут",
+            label = context.getString(R.string.home_minutes),
             iconColor = Primary
         )
     }
@@ -191,6 +195,7 @@ private fun StatCard(
 
 @Composable
 private fun QuickStartSection(onStartWorkout: (String) -> Unit) {
+    val context = LocalContext.current
     Button(
         onClick = { onStartWorkout("squat") },
         modifier = Modifier.fillMaxWidth(),
@@ -207,21 +212,21 @@ private fun QuickStartSection(onStartWorkout: (String) -> Unit) {
         ) {
             Column {
                 Text(
-                    text = "Быстрый старт",
+                    text = context.getString(R.string.home_quick_start),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
                 )
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
-                    text = "Начни тренировку прямо сейчас",
+                    text = context.getString(R.string.home_quick_start_subtitle),
                     fontSize = 13.sp,
                     color = Color.White.copy(alpha = 0.9f)
                 )
             }
             Icon(
                 imageVector = Icons.Default.PlayArrow,
-                contentDescription = "Начать",
+                contentDescription = context.getString(R.string.workout_start),
                 tint = Color.White,
                 modifier = Modifier.size(28.dp)
             )
@@ -252,7 +257,7 @@ private fun SectionHeader(
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
-                text = "Все",
+                text = LocalContext.current.getString(R.string.common_view_all),
                 fontSize = 14.sp,
                 color = Primary,
                 fontWeight = FontWeight.Medium
@@ -272,6 +277,7 @@ private fun ExerciseCard(
     exercise: Exercise,
     onClick: () -> Unit
 ) {
+    val context = LocalContext.current
     Card(
         modifier = Modifier
             .width(160.dp)
@@ -294,7 +300,7 @@ private fun ExerciseCard(
                     .padding(horizontal = 6.dp, vertical = 3.dp)
             ) {
                 Text(
-                    text = getCategoryName(exercise.category),
+                    text = getCategoryName(context, exercise.category),
                     fontSize = 9.sp,
                     color = getCategoryColor(exercise.category),
                     fontWeight = FontWeight.Medium
@@ -315,7 +321,7 @@ private fun ExerciseCard(
             Spacer(modifier = Modifier.height(6.dp))
             
             Text(
-                text = getDifficultyName(exercise.difficulty),
+                text = getDifficultyName(context, exercise.difficulty),
                 fontSize = 12.sp,
                 color = getDifficultyColor(exercise.difficulty),
                 fontWeight = FontWeight.Medium,
@@ -336,7 +342,7 @@ private fun ExerciseCard(
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = "${exercise.calories} ккал",
+                    text = "${exercise.calories} ${context.getString(R.string.common_kcal)}",
                     fontSize = 11.sp,
                     color = TextSecondary
                 )
@@ -350,6 +356,7 @@ private fun ProgramCard(
     program: WorkoutProgram,
     onClick: () -> Unit
 ) {
+    val context = LocalContext.current
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -396,13 +403,13 @@ private fun ProgramCard(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "${program.durationWeeks} недель • ${program.workoutsPerWeek} тр./нед.",
+                    text = "${context.getString(R.string.programs_weeks_short, program.durationWeeks)} • ${context.getString(R.string.programs_workouts_per_week_short, program.workoutsPerWeek)}",
                     fontSize = 13.sp,
                     color = TextSecondary
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = getDifficultyName(program.difficulty),
+                    text = getDifficultyName(context, program.difficulty),
                     fontSize = 12.sp,
                     color = getDifficultyColor(program.difficulty)
                 )

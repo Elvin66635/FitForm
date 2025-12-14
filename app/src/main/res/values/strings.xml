@@ -1,8 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">FitForm AI</string>
+    
+    <string name="nav_home">Home</string>
+    <string name="nav_exercises">Exercises</string>
+    <string name="nav_programs">Programs</string>
+    <string name="nav_calendar">Calendar</string>
+    <string name="nav_settings">More</string>
+    
+    <string name="common_kcal">kcal</string>
+    <string name="common_all">All</string>
+    <string name="common_search">Search</string>
+    <string name="common_view_all">All</string>
+    
+    <string name="home_title">Home</string>
+    <string name="home_greeting">Hello! 👋</string>
+    <string name="home_ready_question">Ready for a workout?</string>
+    <string name="home_stats">Statistics</string>
+    <string name="home_workouts">This week</string>
+    <string name="home_calories">Calories</string>
+    <string name="home_minutes">Minutes</string>
+    <string name="home_quick_start">Quick Start</string>
+    <string name="home_quick_start_subtitle">Start your workout right now</string>
+    <string name="home_recommended">Recommended Exercises</string>
+    <string name="home_programs">Workout Programs</string>
+    <string name="home_view_all">All →</string>
+    
+    <string name="exercise_title">Exercises</string>
+    <string name="exercise_search_placeholder">Search exercises…</string>
+    <string name="exercise_found">Found: %1$d</string>
+    <string name="exercise_filters">Filters</string>
+    <string name="exercise_category">Category</string>
+    <string name="exercise_difficulty">Difficulty</string>
+    <string name="exercise_clear_search">Clear</string>
+    
+    <string name="workout_start">Start</string>
+    <string name="workout_pause">Pause</string>
+    <string name="workout_resume">Resume</string>
+    <string name="workout_finish">Finish</string>
+    <string name="workout_exit_title">Finish Workout?</string>
+    <string name="workout_exit_message">Your progress will be lost.</string>
+    <string name="workout_exit">Exit</string>
+    <string name="workout_continue">Continue</string>
+    <string name="workout_reps">Reps</string>
+    <string name="workout_accuracy">Accuracy</string>
+    <string name="workout_calories">Calories</string>
+    <string name="workout_angle">Angle</string>
+    <string name="workout_form">Form</string>
+    <string name="workout_ready_position">Ready position</string>
+    <string name="workout_pose_detected">Pose detected</string>
+    <string name="workout_click_to_add_rep">Click to add a repetition</string>
+    <string name="workout_camera_development">(Camera under development)</string>
+    <string name="workout_position_in_frame">Position yourself in frame</string>
+    <string name="workout_no_pose">No pose detected</string>
+    <string name="workout_close">Close</string>
+    <string name="workout_training">Training</string>
+    
+    <string name="instructions_title">Before You Start</string>
+    <string name="instructions_step1_title">Step 1: Position</string>
+    <string name="instructions_step1_description">Stand in front of the camera so your full body is visible</string>
+    <string name="instructions_step2_title">Step 2: Lighting</string>
+    <string name="instructions_step2_description">Ensure good lighting so the AI can track your movements</string>
+    <string name="instructions_step3_title">Step 3: Ready</string>
+    <string name="instructions_step3_description">Follow the on-screen feedback to maintain correct form</string>
+    <string name="instructions_next">Next</string>
+    <string name="instructions_skip">Skip</string>
+    <string name="instructions_start">Start Workout</string>
+    
+    <string name="camera_permission_title">Camera Permission</string>
+    <string name="camera_permission_message">The app needs camera access to analyze your exercise form.</string>
+    <string name="camera_permission_allow">Allow</string>
+    <string name="camera_permission_deny">Deny</string>
+    
+    <string name="exercise_instructions">Instructions</string>
+    <string name="exercise_tips">Tips</string>
+    
+    <string name="result_reps_label">Reps</string>
+    <string name="result_calories_label">Calories</string>
+    <string name="result_time_label">Time</string>
+    <string name="result_accuracy_label">Accuracy</string>
+    <string name="result_done">Done</string>
+    <string name="result_repeat">Repeat</string>
+    <string name="result_feedback_perfect">Perfect workout! Great job!</string>
+    <string name="result_feedback_good">Good workout! Keep it up!</string>
+    <string name="result_feedback_few_reps_good_form">Good form, but try to do more reps next time</string>
+    <string name="result_feedback_many_reps_good_form">Great! Many reps with good form</string>
+    <string name="result_feedback_bad_form">Focus on maintaining correct form</string>
+    <string name="result_feedback_no_reps">Try to complete at least a few reps</string>
+    <string name="workout_completed">Workout completed!</string>
+    <string name="workout_score">Score: %1$d</string>
+    <string name="workout_calories_result">Calories: %1$d</string>
+    
+    <string name="programs_title">Programs</string>
+    <string name="programs_free">Free</string>
+    <string name="programs_premium">PRO</string>
+    <string name="programs_start">Start Program</string>
+    <string name="programs_weeks">%1$d weeks</string>
+    <string name="programs_workouts_per_week">%1$d workouts/week</string>
+    <string name="programs_weeks_short">%1$d w.</string>
+    <string name="programs_workouts_per_week_short">%1$d workouts/w.</string>
+    <string name="programs_create">Create Program</string>
+    <string name="programs_get_pro_access">Get PRO Access</string>
+    <string name="programs_pro_description">Unlock all programs and features</string>
+    <string name="programs_more">Learn More</string>
+    <string name="program_detail_title">Program Details</string>
+    <string name="program_detail_duration">Duration: %1$d weeks</string>
+    <string name="program_detail_frequency">Frequency: %1$d workouts/week</string>
+    <string name="program_detail_difficulty">Difficulty: %1$s</string>
+    <string name="program_detail_workouts">Workouts</string>
+    <string name="program_detail_exercises">Exercises</string>
+    
+    <string name="category_strength">Strength</string>
+    <string name="category_cardio">Cardio</string>
+    <string name="category_hiit">HIIT</string>
+    <string name="category_yoga">Yoga</string>
+    <string name="category_calisthenics">Calisthenics</string>
+    <string name="category_crossfit">CrossFit</string>
+    <string name="category_flexibility">Flexibility</string>
+    
+    <string name="difficulty_beginner">Beginner</string>
+    <string name="difficulty_intermediate">Intermediate</string>
+    <string name="difficulty_advanced">Advanced</string>
+    
+    <string name="muscle_group_chest">Chest</string>
+    <string name="muscle_group_back">Back</string>
+    <string name="muscle_group_shoulders">Shoulders</string>
+    <string name="muscle_group_biceps">Biceps</string>
+    <string name="muscle_group_triceps">Triceps</string>
+    <string name="muscle_group_abs">Abs</string>
+    <string name="muscle_group_legs">Legs</string>
+    <string name="muscle_group_full_body">Full Body</string>
+    <string name="muscle_group_quadriceps">Quadriceps</string>
+    <string name="muscle_group_glutes">Glutes</string>
+    <string name="muscle_group_hamstrings">Hamstrings</string>
+    <string name="muscle_group_calves">Calves</string>
+    <string name="muscle_group_obliques">Obliques</string>
+    <string name="muscle_group_core">Core</string>
+    
+    <string name="calendar_title">Calendar</string>
+    <string name="calendar_no_workouts">No workouts</string>
+    <string name="calendar_no_workouts_description">You didn\'t work out on this day</string>
+    <string name="calendar_workout">Workout</string>
+    <string name="calendar_select_day">Select a day</string>
+    <string name="calendar_select_day_description">Click on a day in the calendar to see workout details</string>
+    <string name="calendar_today">Today</string>
 </resources>
-
-
-
-

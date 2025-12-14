@@ -15,14 +15,16 @@ import com.fitform.ai.domain.usecase.SearchExercisesUseCase
 import com.fitform.ai.ui.screens.calendar.CalendarViewModel
 import com.fitform.ai.ui.screens.exercise.ExerciseListViewModel
 import com.fitform.ai.ui.screens.home.HomeViewModel
+import com.fitform.ai.ui.screens.programs.ProgramDetailViewModel
 import com.fitform.ai.ui.screens.programs.ProgramsViewModel
 import com.fitform.ai.ui.screens.workout.WorkoutViewModel
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
-    single<IExerciseRepository> { ExerciseRepository() }
-    single<IProgramRepository> { ProgramRepository() }
+    single<IExerciseRepository> { ExerciseRepository(androidContext()) }
+    single<IProgramRepository> { ProgramRepository(androidContext()) }
     single<IWorkoutRepository> { WorkoutRepository() }
     
     single { GetAllExercisesUseCase(get()) }
@@ -35,6 +37,7 @@ val appModule = module {
     viewModel { HomeViewModel(get(), get(), get()) }
     viewModel { ExerciseListViewModel(get()) }
     viewModel { ProgramsViewModel(get()) }
+    viewModel { params -> ProgramDetailViewModel(params.get(), get(), get()) }
     viewModel { CalendarViewModel(get()) }
     viewModel { params -> WorkoutViewModel(params.get(), get(), get()) }
 }

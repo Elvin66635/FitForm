@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -22,9 +23,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import android.content.Context
+import androidx.compose.ui.platform.LocalContext
+import com.fitform.ai.R
 import com.fitform.ai.domain.model.Exercise
 import com.fitform.ai.domain.model.FeedbackType
+import com.fitform.ai.ui.screens.workout.camera.CameraPreview
+import com.fitform.ai.ui.screens.workout.camera.rememberCameraPermissionState
+import com.fitform.ai.ui.screens.workout.pose.PoseOverlay
 import com.fitform.ai.ui.theme.*
+import com.google.mlkit.vision.pose.Pose
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -44,8 +52,12 @@ fun WorkoutScreen(
     val feedback by viewModel.feedback.collectAsState()
     val feedbackMessage by viewModel.feedbackMessage.collectAsState()
     val countdown by viewModel.countdown.collectAsState()
+    val currentAngle by viewModel.currentAngle.collectAsState()
+    val poseFeedback by viewModel.poseFeedback.collectAsState()
+    val isPoseDetected by viewModel.isPoseDetected.collectAsState()
     
     var showExitDialog by remember { mutableStateOf(false) }
+    var showInstructionsDialog by remember { mutableStateOf(true) }
     
     Box(
         modifier = Modifier
@@ -55,14 +67,12 @@ fun WorkoutScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            // Top Bar
             WorkoutTopBar(
                 exercise = exercise,
                 elapsedTime = elapsedTime,
                 onBack = { showExitDialog = true }
             )
             
-            // Main Content
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -73,7 +83,13 @@ fun WorkoutScreen(
                     WorkoutState.READY -> {
                         ReadyState(
                             exercise = exercise,
-                            onStart = { viewModel.startCountdown() }
+                            onStart = { 
+                                if (showInstructionsDialog) {
+                                    showInstructionsDialog = true
+                                } else {
+                                    viewModel.startCountdown()
+                                }
+                            }
                         )
                     }
                     WorkoutState.COUNTDOWN -> {
@@ -84,19 +100,21 @@ fun WorkoutScreen(
                             currentReps = currentReps,
                             currentScore = currentScore,
                             calories = calories,
+                            currentAngle = currentAngle,
+                            poseFeedback = poseFeedback,
+                            isPoseDetected = isPoseDetected,
                             isPaused = workoutState == WorkoutState.PAUSED,
                             feedback = feedback,
                             feedbackMessage = feedbackMessage,
-                            onAddRep = { viewModel.addRep() }
+                            onAddRep = { viewModel.addRep() },
+                            onPoseDetected = { pose -> viewModel.analyzePose(pose) }
                         )
                     }
                     WorkoutState.FINISHED -> {
-                        // Navigate to result
                     }
                 }
             }
             
-            // Bottom Controls
             if (workoutState == WorkoutState.ACTIVE || workoutState == WorkoutState.PAUSED) {
                 WorkoutControls(
                     isPaused = workoutState == WorkoutState.PAUSED,
@@ -110,12 +128,35 @@ fun WorkoutScreen(
             }
         }
         
-        // Exit Dialog
+        if (showInstructionsDialog && workoutState == WorkoutState.READY) {
+            ExerciseInstructionsDialog(
+                onDismiss = { showInstructionsDialog = false },
+                onStart = {
+                    showInstructionsDialog = false
+                    viewModel.startCountdown()
+                },
+                onSkip = {
+                    showInstructionsDialog = false
+                    viewModel.startCountdown()
+                }
+            )
+        }
+        
         if (showExitDialog) {
             AlertDialog(
                 onDismissRequest = { showExitDialog = false },
-                title = { Text("Завершить тренировку?", color = TextPrimary) },
-                text = { Text("Ваш прогресс будет потерян.", color = TextSecondary) },
+                title = { 
+                    Text(
+                        text = androidx.compose.ui.platform.LocalContext.current.getString(R.string.workout_exit_title),
+                        color = TextPrimary
+                    ) 
+                },
+                text = { 
+                    Text(
+                        text = androidx.compose.ui.platform.LocalContext.current.getString(R.string.workout_exit_message),
+                        color = TextSecondary
+                    ) 
+                },
                 confirmButton = {
                     TextButton(
                         onClick = {
@@ -123,12 +164,18 @@ fun WorkoutScreen(
                             onBack()
                         }
                     ) {
-                        Text("Выйти", color = Error)
+                        Text(
+                            text = androidx.compose.ui.platform.LocalContext.current.getString(R.string.workout_exit),
+                            color = Error
+                        )
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { showExitDialog = false }) {
-                        Text("Продолжить", color = Primary)
+                        Text(
+                            text = androidx.compose.ui.platform.LocalContext.current.getString(R.string.workout_continue),
+                            color = Primary
+                        )
                     }
                 },
                 containerColor = Surface
@@ -149,10 +196,11 @@ private fun WorkoutTopBar(
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        val context = LocalContext.current
         IconButton(onClick = onBack) {
             Icon(
                 imageVector = Icons.Default.Close,
-                contentDescription = "Закрыть",
+                contentDescription = context.getString(R.string.workout_close),
                 tint = TextPrimary
             )
         }
@@ -162,7 +210,7 @@ private fun WorkoutTopBar(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = exercise?.name ?: "Тренировка",
+                text = exercise?.name ?: context.getString(R.string.workout_training),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = TextPrimary
@@ -174,7 +222,6 @@ private fun WorkoutTopBar(
             )
         }
         
-        // Placeholder for symmetry
         Spacer(modifier = Modifier.size(48.dp))
     }
 }
@@ -188,7 +235,6 @@ private fun ReadyState(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(32.dp)
     ) {
-        // Exercise icon
         Box(
             modifier = Modifier
                 .size(120.dp)
@@ -207,7 +253,7 @@ private fun ReadyState(
         Spacer(modifier = Modifier.height(32.dp))
         
         Text(
-            text = exercise?.name ?: "Упражнение",
+            text = exercise?.name ?: androidx.compose.ui.platform.LocalContext.current.getString(R.string.exercise_title),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = TextPrimary
@@ -224,7 +270,6 @@ private fun ReadyState(
         
         Spacer(modifier = Modifier.height(48.dp))
         
-        // Start Button
         Button(
             onClick = onStart,
             modifier = Modifier
@@ -240,7 +285,7 @@ private fun ReadyState(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = "Начать",
+                text = androidx.compose.ui.platform.LocalContext.current.getString(R.string.workout_start),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -275,49 +320,73 @@ private fun ActiveWorkoutState(
     currentReps: Int,
     currentScore: Int,
     calories: Int,
+    currentAngle: Float,
+    poseFeedback: String,
+    isPoseDetected: Boolean,
     isPaused: Boolean,
     feedback: FeedbackType,
     feedbackMessage: String,
-    onAddRep: () -> Unit
+    onAddRep: () -> Unit,
+    onPoseDetected: (Pose?) -> Unit
 ) {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Stats Row
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             WorkoutStat(
                 value = currentReps.toString(),
-                label = "Повторения",
+                label = context.getString(R.string.workout_reps),
                 color = Primary
             )
             WorkoutStat(
                 value = "$currentScore%",
-                label = "Точность",
+                label = context.getString(R.string.workout_accuracy),
                 color = Secondary
             )
             WorkoutStat(
                 value = calories.toString(),
-                label = "Калории",
+                label = context.getString(R.string.workout_calories),
                 color = Accent
             )
         }
         
+        if (isPoseDetected) {
+            Spacer(modifier = Modifier.height(12.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                WorkoutStat(
+                    value = "${currentAngle.toInt()}°",
+                    label = context.getString(R.string.workout_angle),
+                    color = Primary.copy(alpha = 0.8f)
+                )
+                WorkoutStat(
+                    value = context.getString(R.string.workout_pose_detected),
+                    label = context.getString(R.string.workout_form),
+                    color = Secondary.copy(alpha = 0.8f)
+                )
+            }
+        }
+        
         Spacer(modifier = Modifier.height(32.dp))
         
-        // Camera preview placeholder / Rep counter button
+        val (hasCameraPermission, requestPermission) = rememberCameraPermissionState()
+        var currentPose by remember { mutableStateOf<Pose?>(null) }
+        
         Box(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(24.dp))
-                .background(Surface)
-                .clickable { onAddRep() },
+                .background(Surface),
             contentAlignment = Alignment.Center
         ) {
             if (isPaused) {
@@ -332,15 +401,16 @@ private fun ActiveWorkoutState(
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = "Пауза",
+                        text = context.getString(R.string.workout_pause),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         color = TextSecondary
                     )
                 }
-            } else {
+            } else if (!hasCameraPermission) {
                 Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.clickable { requestPermission() }
                 ) {
                     Icon(
                         imageVector = Icons.Default.CameraAlt,
@@ -350,21 +420,64 @@ private fun ActiveWorkoutState(
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = "Нажмите для добавления повторения",
+                        text = context.getString(R.string.camera_permission_message),
                         fontSize = 14.sp,
                         color = TextHint,
                         textAlign = TextAlign.Center
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "(Камера в разработке)",
-                        fontSize = 12.sp,
-                        color = TextHint
+                }
+            } else {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    CameraPreview(
+                        modifier = Modifier.fillMaxSize(),
+                        onPoseDetected = { pose ->
+                            currentPose = pose
+                            onPoseDetected(pose)
+                        },
+                        isActive = !isPaused
                     )
+                    
+                    if (currentPose != null) {
+                        androidx.compose.foundation.layout.BoxWithConstraints(
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            val canvasWidth = constraints.maxWidth.toFloat()
+                            val canvasHeight = constraints.maxHeight.toFloat()
+                            PoseOverlay(
+                                pose = currentPose,
+                                modifier = Modifier.fillMaxSize(),
+                                imageWidth = 640f,
+                                imageHeight = 480f,
+                                canvasWidth = canvasWidth,
+                                canvasHeight = canvasHeight,
+                                mirrorHorizontally = true
+                            )
+                        }
+                    }
+                    
+                    if (isPoseDetected && poseFeedback.isNotEmpty()) {
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .padding(16.dp)
+                                .background(
+                                    Color.Black.copy(alpha = 0.7f),
+                                    RoundedCornerShape(8.dp)
+                                )
+                                .padding(12.dp)
+                        ) {
+                            Text(
+                                text = poseFeedback,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
                 }
             }
-            
-            // Feedback overlay
+        
             if (feedback != FeedbackType.NONE) {
                 Box(
                     modifier = Modifier
@@ -429,7 +542,6 @@ private fun WorkoutControls(
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Finish button
         OutlinedButton(
             onClick = onFinish,
             modifier = Modifier.size(64.dp),
@@ -441,14 +553,14 @@ private fun WorkoutControls(
                 brush = Brush.linearGradient(listOf(Error, Error))
             )
         ) {
+            val context = LocalContext.current
             Icon(
                 imageVector = Icons.Default.Stop,
-                contentDescription = "Завершить",
+                contentDescription = context.getString(R.string.workout_finish),
                 modifier = Modifier.size(28.dp)
             )
         }
         
-        // Pause/Resume button
         Button(
             onClick = { if (isPaused) onResume() else onPause() },
             modifier = Modifier.size(80.dp),
@@ -457,14 +569,14 @@ private fun WorkoutControls(
                 containerColor = if (isPaused) Primary else Secondary
             )
         ) {
+            val context = LocalContext.current
             Icon(
                 imageVector = if (isPaused) Icons.Default.PlayArrow else Icons.Default.Pause,
-                contentDescription = if (isPaused) "Продолжить" else "Пауза",
+                contentDescription = if (isPaused) context.getString(R.string.workout_resume) else context.getString(R.string.workout_pause),
                 modifier = Modifier.size(36.dp)
             )
         }
         
-        // Placeholder for symmetry
         Spacer(modifier = Modifier.size(64.dp))
     }
 }

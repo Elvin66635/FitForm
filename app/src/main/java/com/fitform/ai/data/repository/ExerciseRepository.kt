@@ -1,33 +1,120 @@
 package com.fitform.ai.data.repository
 
+import android.content.Context
 import com.fitform.ai.domain.model.*
 import com.fitform.ai.domain.repository.IExerciseRepository
+import com.fitform.ai.ui.resources.ExerciseLocalizer
 
-class ExerciseRepository : IExerciseRepository {
+class ExerciseRepository(private val context: Context) : IExerciseRepository {
     
-    override fun getAllExercises(): List<Exercise> = defaultExercises
+    override fun getAllExercises(): List<Exercise> = 
+        ExerciseLocalizer.localizeExercises(context, defaultExercises)
     
-    override fun getExerciseById(id: String): Exercise? = defaultExercises.find { it.id == id }
+    override fun getExerciseById(id: String): Exercise? = 
+        defaultExercises.find { it.id == id }?.let { 
+            ExerciseLocalizer.localizeExercise(context, it) 
+        }
     
     override fun getExercisesByCategory(category: ExerciseCategory): List<Exercise> =
-        defaultExercises.filter { it.category == category }
+        ExerciseLocalizer.localizeExercises(
+            context, 
+            defaultExercises.filter { it.category == category }
+        )
     
     override fun getExercisesByMuscle(muscle: MuscleGroup): List<Exercise> =
-        defaultExercises.filter { muscle in it.muscleGroups }
+        ExerciseLocalizer.localizeExercises(
+            context,
+            defaultExercises.filter { muscle in it.muscleGroups }
+        )
     
     override fun getExercisesByDifficulty(difficulty: Difficulty): List<Exercise> =
-        defaultExercises.filter { it.difficulty == difficulty }
+        ExerciseLocalizer.localizeExercises(
+            context,
+            defaultExercises.filter { it.difficulty == difficulty }
+        )
     
-    override fun searchExercises(query: String): List<Exercise> =
-        defaultExercises.filter { 
+    override fun searchExercises(query: String): List<Exercise> {
+        val localized = ExerciseLocalizer.localizeExercises(context, defaultExercises)
+        return localized.filter { 
             it.name.contains(query, ignoreCase = true) || 
             it.description.contains(query, ignoreCase = true)
         }
+    }
     
-    override fun getFreeExercises(): List<Exercise> = defaultExercises.filter { !it.isPremium }
+    override fun getFreeExercises(): List<Exercise> = 
+        ExerciseLocalizer.localizeExercises(
+            context,
+            defaultExercises.filter { !it.isPremium }
+        )
     
     companion object {
         val defaultExercises = listOf(
+            Exercise(
+                id = "barbell_bench_press",
+                name = "Жим штанги лёжа",
+                description = "Классическое базовое упражнение для груди",
+                category = ExerciseCategory.STRENGTH,
+                difficulty = Difficulty.INTERMEDIATE,
+                muscleGroups = listOf(MuscleGroup.CHEST, MuscleGroup.TRICEPS, MuscleGroup.SHOULDERS),
+                calories = 12,
+                equipment = Equipment.BARBELL,
+                isGym = true
+            ),
+            Exercise(
+                id = "dumbbell_bench_press",
+                name = "Жим гантелей лёжа",
+                description = "Жим гантелей для развития груди",
+                category = ExerciseCategory.STRENGTH,
+                difficulty = Difficulty.INTERMEDIATE,
+                muscleGroups = listOf(MuscleGroup.CHEST, MuscleGroup.TRICEPS, MuscleGroup.SHOULDERS),
+                calories = 11,
+                equipment = Equipment.DUMBBELLS,
+                isGym = true
+            ),
+            Exercise(
+                id = "incline_dumbbell_press",
+                name = "Жим гантелей на наклонной скамье",
+                description = "Жим для верхней части груди",
+                category = ExerciseCategory.STRENGTH,
+                difficulty = Difficulty.INTERMEDIATE,
+                muscleGroups = listOf(MuscleGroup.CHEST, MuscleGroup.TRICEPS, MuscleGroup.SHOULDERS),
+                calories = 11,
+                equipment = Equipment.DUMBBELLS,
+                isGym = true
+            ),
+            Exercise(
+                id = "dumbbell_flyes",
+                name = "Разведения гантелей лёжа",
+                description = "Изолирующее упражнение для груди",
+                category = ExerciseCategory.STRENGTH,
+                difficulty = Difficulty.INTERMEDIATE,
+                muscleGroups = listOf(MuscleGroup.CHEST),
+                calories = 8,
+                equipment = Equipment.DUMBBELLS,
+                isGym = true
+            ),
+            Exercise(
+                id = "pec_deck",
+                name = "Сведение рук в тренажёре",
+                description = "Изолирующее упражнение для груди в тренажёре",
+                category = ExerciseCategory.STRENGTH,
+                difficulty = Difficulty.BEGINNER,
+                muscleGroups = listOf(MuscleGroup.CHEST),
+                calories = 7,
+                equipment = Equipment.MACHINE,
+                isGym = true
+            ),
+            Exercise(
+                id = "dips_chest",
+                name = "Отжимания на брусьях (акцент на грудь)",
+                description = "Отжимания на брусьях с наклоном вперёд для груди",
+                category = ExerciseCategory.STRENGTH,
+                difficulty = Difficulty.INTERMEDIATE,
+                muscleGroups = listOf(MuscleGroup.CHEST, MuscleGroup.TRICEPS, MuscleGroup.SHOULDERS),
+                calories = 10,
+                equipment = Equipment.BODYWEIGHT,
+                isGym = false
+            ),
             Exercise(
                 id = "pushup",
                 name = "Отжимания",
@@ -36,90 +123,87 @@ class ExerciseRepository : IExerciseRepository {
                 difficulty = Difficulty.BEGINNER,
                 muscleGroups = listOf(MuscleGroup.CHEST, MuscleGroup.TRICEPS, MuscleGroup.SHOULDERS),
                 calories = 7,
-                instructions = listOf(
-                    "Примите упор лёжа, руки на ширине плеч",
-                    "Держите тело прямым от головы до пяток",
-                    "Опуститесь, сгибая локти",
-                    "Поднимитесь, выпрямляя руки"
-                ),
-                tips = listOf("Не прогибайте поясницу", "Локти под углом 45°")
+                equipment = Equipment.BODYWEIGHT,
+                isGym = false
             ),
-            Exercise(
-                id = "diamond_pushup",
-                name = "Алмазные отжимания",
-                description = "Отжимания с узкой постановкой рук для трицепсов",
-                category = ExerciseCategory.STRENGTH,
-                difficulty = Difficulty.INTERMEDIATE,
-                muscleGroups = listOf(MuscleGroup.TRICEPS, MuscleGroup.CHEST),
-                calories = 8
-            ),
-            Exercise(
-                id = "wide_pushup",
-                name = "Широкие отжимания",
-                description = "Отжимания с широкой постановкой рук для груди",
-                category = ExerciseCategory.STRENGTH,
-                difficulty = Difficulty.BEGINNER,
-                muscleGroups = listOf(MuscleGroup.CHEST, MuscleGroup.SHOULDERS),
-                calories = 7
-            ),
-            Exercise(
-                id = "pike_pushup",
-                name = "Отжимания уголком",
-                description = "Отжимания для плеч с поднятым тазом",
-                category = ExerciseCategory.STRENGTH,
-                difficulty = Difficulty.INTERMEDIATE,
-                muscleGroups = listOf(MuscleGroup.SHOULDERS, MuscleGroup.TRICEPS),
-                calories = 8
-            ),
-            Exercise(
-                id = "decline_pushup",
-                name = "Отжимания с ногами на возвышении",
-                description = "Усложнённые отжимания для верхней части груди",
-                category = ExerciseCategory.STRENGTH,
-                difficulty = Difficulty.INTERMEDIATE,
-                muscleGroups = listOf(MuscleGroup.CHEST, MuscleGroup.SHOULDERS),
-                calories = 9
-            ),
+            
             Exercise(
                 id = "pullup",
-                name = "Подтягивания",
-                description = "Базовое упражнение для спины и бицепсов",
+                name = "Подтягивания широким хватом",
+                description = "Базовое упражнение для спины",
                 category = ExerciseCategory.STRENGTH,
                 difficulty = Difficulty.INTERMEDIATE,
                 muscleGroups = listOf(MuscleGroup.BACK, MuscleGroup.BICEPS),
                 calories = 10,
-                instructions = listOf(
-                    "Возьмитесь за перекладину хватом шире плеч",
-                    "Подтянитесь, пока подбородок не окажется выше перекладины",
-                    "Медленно опуститесь в исходное положение"
-                )
+                equipment = Equipment.BODYWEIGHT,
+                isGym = false
             ),
             Exercise(
-                id = "chin_up",
-                name = "Подтягивания обратным хватом",
-                description = "Подтягивания с акцентом на бицепс",
-                category = ExerciseCategory.STRENGTH,
-                difficulty = Difficulty.INTERMEDIATE,
-                muscleGroups = listOf(MuscleGroup.BICEPS, MuscleGroup.BACK),
-                calories = 10
-            ),
-            Exercise(
-                id = "inverted_row",
-                name = "Австралийские подтягивания",
-                description = "Горизонтальные подтягивания для начинающих",
+                id = "lat_pulldown",
+                name = "Тяга верхнего блока к груди",
+                description = "Упражнение для широчайших мышц спины",
                 category = ExerciseCategory.STRENGTH,
                 difficulty = Difficulty.BEGINNER,
                 muscleGroups = listOf(MuscleGroup.BACK, MuscleGroup.BICEPS),
-                calories = 6
+                calories = 9,
+                equipment = Equipment.MACHINE,
+                isGym = true
             ),
             Exercise(
-                id = "superman",
-                name = "Супермен",
+                id = "barbell_row",
+                name = "Тяга штанги в наклоне",
+                description = "Базовое упражнение для спины",
+                category = ExerciseCategory.STRENGTH,
+                difficulty = Difficulty.INTERMEDIATE,
+                muscleGroups = listOf(MuscleGroup.BACK, MuscleGroup.BICEPS),
+                calories = 10,
+                equipment = Equipment.BARBELL,
+                isGym = true
+            ),
+            Exercise(
+                id = "dumbbell_row",
+                name = "Тяга гантели одной рукой",
+                description = "Односторонняя тяга для спины",
+                category = ExerciseCategory.STRENGTH,
+                difficulty = Difficulty.INTERMEDIATE,
+                muscleGroups = listOf(MuscleGroup.BACK, MuscleGroup.BICEPS),
+                calories = 9,
+                equipment = Equipment.DUMBBELLS,
+                isGym = true
+            ),
+            Exercise(
+                id = "seated_row",
+                name = "Горизонтальная тяга в тренажёре",
+                description = "Упражнение для спины в тренажёре",
+                category = ExerciseCategory.STRENGTH,
+                difficulty = Difficulty.BEGINNER,
+                muscleGroups = listOf(MuscleGroup.BACK, MuscleGroup.BICEPS),
+                calories = 8,
+                equipment = Equipment.MACHINE,
+                isGym = true
+            ),
+            Exercise(
+                id = "hyperextension",
+                name = "Гиперэкстензия",
                 description = "Упражнение для нижней части спины",
                 category = ExerciseCategory.STRENGTH,
                 difficulty = Difficulty.BEGINNER,
                 muscleGroups = listOf(MuscleGroup.BACK, MuscleGroup.GLUTES),
-                calories = 4
+                calories = 5,
+                equipment = Equipment.MACHINE,
+                isGym = true
+            ),
+            
+            Exercise(
+                id = "barbell_squat",
+                name = "Приседания со штангой",
+                description = "Базовое упражнение для ног",
+                category = ExerciseCategory.STRENGTH,
+                difficulty = Difficulty.INTERMEDIATE,
+                muscleGroups = listOf(MuscleGroup.QUADRICEPS, MuscleGroup.GLUTES, MuscleGroup.HAMSTRINGS),
+                calories = 13,
+                equipment = Equipment.BARBELL,
+                isGym = true
             ),
             Exercise(
                 id = "squat",
@@ -128,76 +212,266 @@ class ExerciseRepository : IExerciseRepository {
                 category = ExerciseCategory.STRENGTH,
                 difficulty = Difficulty.BEGINNER,
                 muscleGroups = listOf(MuscleGroup.QUADRICEPS, MuscleGroup.GLUTES, MuscleGroup.HAMSTRINGS),
-                calories = 8,
-                instructions = listOf(
-                    "Встаньте, ноги на ширине плеч",
-                    "Присядьте, отводя таз назад",
-                    "Колени не выходят за носки",
-                    "Вернитесь в исходное положение"
-                )
+                calories = 9,
+                equipment = Equipment.BODYWEIGHT,
+                isGym = false
             ),
             Exercise(
-                id = "squat_jump",
-                name = "Приседания с прыжком",
-                description = "Взрывное упражнение для ног",
-                category = ExerciseCategory.HIIT,
-                difficulty = Difficulty.INTERMEDIATE,
-                muscleGroups = listOf(MuscleGroup.QUADRICEPS, MuscleGroup.GLUTES, MuscleGroup.CALVES),
-                calories = 12
+                id = "leg_press",
+                name = "Жим ногами в тренажёре",
+                description = "Упражнение для ног в тренажёре",
+                category = ExerciseCategory.STRENGTH,
+                difficulty = Difficulty.BEGINNER,
+                muscleGroups = listOf(MuscleGroup.QUADRICEPS, MuscleGroup.GLUTES),
+                calories = 11,
+                equipment = Equipment.MACHINE,
+                isGym = true
             ),
             Exercise(
                 id = "lunge",
-                name = "Выпады",
+                name = "Выпады с гантелями",
                 description = "Упражнение для ног и баланса",
                 category = ExerciseCategory.STRENGTH,
                 difficulty = Difficulty.BEGINNER,
                 muscleGroups = listOf(MuscleGroup.QUADRICEPS, MuscleGroup.GLUTES, MuscleGroup.HAMSTRINGS),
-                calories = 7
+                calories = 8,
+                equipment = Equipment.DUMBBELLS,
+                isGym = true
             ),
             Exercise(
-                id = "walking_lunge",
-                name = "Шагающие выпады",
-                description = "Динамичные выпады с продвижением",
+                id = "leg_curl",
+                name = "Сгибание ног лёжа",
+                description = "Изолирующее упражнение для задней поверхности бедра",
                 category = ExerciseCategory.STRENGTH,
-                difficulty = Difficulty.INTERMEDIATE,
-                muscleGroups = listOf(MuscleGroup.QUADRICEPS, MuscleGroup.GLUTES),
-                calories = 9
+                difficulty = Difficulty.BEGINNER,
+                muscleGroups = listOf(MuscleGroup.HAMSTRINGS),
+                calories = 6,
+                equipment = Equipment.MACHINE,
+                isGym = true
             ),
             Exercise(
-                id = "bulgarian_split_squat",
-                name = "Болгарские выпады",
-                description = "Выпады с задней ногой на возвышении",
+                id = "leg_extension",
+                name = "Разгибание ног сидя",
+                description = "Изолирующее упражнение для квадрицепсов",
                 category = ExerciseCategory.STRENGTH,
-                difficulty = Difficulty.INTERMEDIATE,
-                muscleGroups = listOf(MuscleGroup.QUADRICEPS, MuscleGroup.GLUTES),
-                calories = 8
+                difficulty = Difficulty.BEGINNER,
+                muscleGroups = listOf(MuscleGroup.QUADRICEPS),
+                calories = 6,
+                equipment = Equipment.MACHINE,
+                isGym = true
             ),
             Exercise(
                 id = "calf_raise",
-                name = "Подъём на носки",
+                name = "Подъёмы на носки (икры)",
                 description = "Изолированное упражнение для икр",
                 category = ExerciseCategory.STRENGTH,
                 difficulty = Difficulty.BEGINNER,
                 muscleGroups = listOf(MuscleGroup.CALVES),
-                calories = 3
+                calories = 4,
+                equipment = Equipment.BODYWEIGHT,
+                isGym = false
+            ),
+            
+            Exercise(
+                id = "dumbbell_shoulder_press",
+                name = "Жим гантелей сидя",
+                description = "Базовое упражнение для плеч",
+                category = ExerciseCategory.STRENGTH,
+                difficulty = Difficulty.INTERMEDIATE,
+                muscleGroups = listOf(MuscleGroup.SHOULDERS, MuscleGroup.TRICEPS),
+                calories = 10,
+                equipment = Equipment.DUMBBELLS,
+                isGym = true
             ),
             Exercise(
-                id = "wall_sit",
-                name = "Стульчик у стены",
-                description = "Статическое упражнение для ног",
+                id = "military_press",
+                name = "Жим штанги стоя",
+                description = "Классическое упражнение для плеч",
                 category = ExerciseCategory.STRENGTH,
-                difficulty = Difficulty.BEGINNER,
-                muscleGroups = listOf(MuscleGroup.QUADRICEPS),
-                calories = 5
+                difficulty = Difficulty.INTERMEDIATE,
+                muscleGroups = listOf(MuscleGroup.SHOULDERS, MuscleGroup.TRICEPS),
+                calories = 11,
+                equipment = Equipment.BARBELL,
+                isGym = true
             ),
             Exercise(
-                id = "glute_bridge",
-                name = "Ягодичный мост",
-                description = "Упражнение для ягодиц",
+                id = "lateral_raise",
+                name = "Разведения гантелей в стороны",
+                description = "Изолирующее упражнение для средних дельт",
                 category = ExerciseCategory.STRENGTH,
                 difficulty = Difficulty.BEGINNER,
-                muscleGroups = listOf(MuscleGroup.GLUTES, MuscleGroup.HAMSTRINGS),
-                calories = 5
+                muscleGroups = listOf(MuscleGroup.SHOULDERS),
+                calories = 6,
+                equipment = Equipment.DUMBBELLS,
+                isGym = true
+            ),
+            Exercise(
+                id = "rear_delt_fly",
+                name = "Разведения гантелей в наклоне",
+                description = "Упражнение для задней дельты",
+                category = ExerciseCategory.STRENGTH,
+                difficulty = Difficulty.INTERMEDIATE,
+                muscleGroups = listOf(MuscleGroup.SHOULDERS),
+                calories = 6,
+                equipment = Equipment.DUMBBELLS,
+                isGym = true
+            ),
+            Exercise(
+                id = "upright_row",
+                name = "Тяга штанги к подбородку",
+                description = "Упражнение для плеч и трапеций",
+                category = ExerciseCategory.STRENGTH,
+                difficulty = Difficulty.INTERMEDIATE,
+                muscleGroups = listOf(MuscleGroup.SHOULDERS, MuscleGroup.BACK),
+                calories = 8,
+                equipment = Equipment.BARBELL,
+                isGym = true
+            ),
+            
+            Exercise(
+                id = "barbell_curl",
+                name = "Подъём штанги на бицепс",
+                description = "Классическое упражнение для бицепса",
+                category = ExerciseCategory.STRENGTH,
+                difficulty = Difficulty.BEGINNER,
+                muscleGroups = listOf(MuscleGroup.BICEPS),
+                calories = 6,
+                equipment = Equipment.BARBELL,
+                isGym = true
+            ),
+            Exercise(
+                id = "dumbbell_curl",
+                name = "Подъём гантелей на бицепс",
+                description = "Упражнение для бицепса",
+                category = ExerciseCategory.STRENGTH,
+                difficulty = Difficulty.BEGINNER,
+                muscleGroups = listOf(MuscleGroup.BICEPS),
+                calories = 6,
+                equipment = Equipment.DUMBBELLS,
+                isGym = true
+            ),
+            Exercise(
+                id = "hammer_curl",
+                name = "Молотковые сгибания",
+                description = "Сгибания с нейтральным хватом для бицепса и предплечий",
+                category = ExerciseCategory.STRENGTH,
+                difficulty = Difficulty.BEGINNER,
+                muscleGroups = listOf(MuscleGroup.BICEPS, MuscleGroup.FOREARMS),
+                calories = 6,
+                equipment = Equipment.DUMBBELLS,
+                isGym = true
+            ),
+            Exercise(
+                id = "scott_curl",
+                name = "Сгибания рук на скамье Скотта",
+                description = "Изолирующее упражнение для бицепса",
+                category = ExerciseCategory.STRENGTH,
+                difficulty = Difficulty.INTERMEDIATE,
+                muscleGroups = listOf(MuscleGroup.BICEPS),
+                calories = 6,
+                equipment = Equipment.BARBELL,
+                isGym = true
+            ),
+            Exercise(
+                id = "cable_curl",
+                name = "Сгибания рук в кроссовере",
+                description = "Сгибания на бицепс в кроссовере",
+                category = ExerciseCategory.STRENGTH,
+                difficulty = Difficulty.BEGINNER,
+                muscleGroups = listOf(MuscleGroup.BICEPS),
+                calories = 6,
+                equipment = Equipment.CABLE,
+                isGym = true
+            ),
+            
+            Exercise(
+                id = "close_grip_bench_press",
+                name = "Жим узким хватом",
+                description = "Жим лёжа узким хватом для трицепса",
+                category = ExerciseCategory.STRENGTH,
+                difficulty = Difficulty.INTERMEDIATE,
+                muscleGroups = listOf(MuscleGroup.TRICEPS, MuscleGroup.CHEST),
+                calories = 10,
+                equipment = Equipment.BARBELL,
+                isGym = true
+            ),
+            Exercise(
+                id = "tricep_extension",
+                name = "Французский жим",
+                description = "Разгибание рук для трицепса",
+                category = ExerciseCategory.STRENGTH,
+                difficulty = Difficulty.INTERMEDIATE,
+                muscleGroups = listOf(MuscleGroup.TRICEPS),
+                calories = 7,
+                equipment = Equipment.BARBELL,
+                isGym = true
+            ),
+            Exercise(
+                id = "tricep_pushdown",
+                name = "Разгибание рук на блоке",
+                description = "Разгибание на трицепс в кроссовере",
+                category = ExerciseCategory.STRENGTH,
+                difficulty = Difficulty.BEGINNER,
+                muscleGroups = listOf(MuscleGroup.TRICEPS),
+                calories = 6,
+                equipment = Equipment.CABLE,
+                isGym = true
+            ),
+            Exercise(
+                id = "dips_tricep",
+                name = "Отжимания на брусьях (акцент на трицепс)",
+                description = "Отжимания на брусьях с вертикальным корпусом",
+                category = ExerciseCategory.STRENGTH,
+                difficulty = Difficulty.INTERMEDIATE,
+                muscleGroups = listOf(MuscleGroup.TRICEPS, MuscleGroup.SHOULDERS),
+                calories = 9,
+                equipment = Equipment.BODYWEIGHT,
+                isGym = false
+            ),
+            Exercise(
+                id = "overhead_tricep_extension",
+                name = "Разгибание гантели из-за головы",
+                description = "Разгибание для трицепса",
+                category = ExerciseCategory.STRENGTH,
+                difficulty = Difficulty.INTERMEDIATE,
+                muscleGroups = listOf(MuscleGroup.TRICEPS),
+                calories = 7,
+                equipment = Equipment.DUMBBELLS,
+                isGym = true
+            ),
+            Exercise(
+                id = "tricep_dip",
+                name = "Обратные отжимания",
+                description = "Отжимания от опоры для трицепсов",
+                category = ExerciseCategory.STRENGTH,
+                difficulty = Difficulty.BEGINNER,
+                muscleGroups = listOf(MuscleGroup.TRICEPS, MuscleGroup.SHOULDERS),
+                calories = 6,
+                equipment = Equipment.BODYWEIGHT,
+                isGym = false
+            ),
+            
+            Exercise(
+                id = "crunch",
+                name = "Скручивания",
+                description = "Базовое упражнение для пресса",
+                category = ExerciseCategory.STRENGTH,
+                difficulty = Difficulty.BEGINNER,
+                muscleGroups = listOf(MuscleGroup.ABS),
+                calories = 5,
+                equipment = Equipment.BODYWEIGHT,
+                isGym = false
+            ),
+            Exercise(
+                id = "hanging_leg_raise",
+                name = "Подъёмы ног в висе",
+                description = "Продвинутое упражнение для пресса",
+                category = ExerciseCategory.STRENGTH,
+                difficulty = Difficulty.ADVANCED,
+                muscleGroups = listOf(MuscleGroup.ABS, MuscleGroup.CORE),
+                calories = 9,
+                equipment = Equipment.BODYWEIGHT,
+                isGym = false
             ),
             Exercise(
                 id = "plank",
@@ -207,84 +481,75 @@ class ExerciseRepository : IExerciseRepository {
                 difficulty = Difficulty.BEGINNER,
                 muscleGroups = listOf(MuscleGroup.ABS, MuscleGroup.CORE),
                 calories = 4,
-                instructions = listOf(
-                    "Примите упор на предплечьях",
-                    "Тело должно быть прямой линией",
-                    "Напрягите пресс и ягодицы",
-                    "Удерживайте положение"
-                )
-            ),
-            Exercise(
-                id = "side_plank",
-                name = "Боковая планка",
-                description = "Планка для косых мышц",
-                category = ExerciseCategory.STRENGTH,
-                difficulty = Difficulty.INTERMEDIATE,
-                muscleGroups = listOf(MuscleGroup.OBLIQUES, MuscleGroup.CORE),
-                calories = 4
-            ),
-            Exercise(
-                id = "crunch",
-                name = "Скручивания",
-                description = "Базовое упражнение для пресса",
-                category = ExerciseCategory.STRENGTH,
-                difficulty = Difficulty.BEGINNER,
-                muscleGroups = listOf(MuscleGroup.ABS),
-                calories = 5
-            ),
-            Exercise(
-                id = "bicycle_crunch",
-                name = "Велосипед",
-                description = "Скручивания с вращением для косых мышц",
-                category = ExerciseCategory.STRENGTH,
-                difficulty = Difficulty.INTERMEDIATE,
-                muscleGroups = listOf(MuscleGroup.ABS, MuscleGroup.OBLIQUES),
-                calories = 7
-            ),
-            Exercise(
-                id = "leg_raise",
-                name = "Подъём ног лёжа",
-                description = "Упражнение для нижней части пресса",
-                category = ExerciseCategory.STRENGTH,
-                difficulty = Difficulty.INTERMEDIATE,
-                muscleGroups = listOf(MuscleGroup.ABS),
-                calories = 6
+                equipment = Equipment.BODYWEIGHT,
+                isGym = false
             ),
             Exercise(
                 id = "russian_twist",
-                name = "Русские скручивания",
+                name = "Косые скручивания",
                 description = "Упражнение для косых мышц",
                 category = ExerciseCategory.STRENGTH,
                 difficulty = Difficulty.INTERMEDIATE,
                 muscleGroups = listOf(MuscleGroup.OBLIQUES, MuscleGroup.ABS),
-                calories = 6
+                calories = 6,
+                equipment = Equipment.BODYWEIGHT,
+                isGym = false
             ),
             Exercise(
-                id = "mountain_climber",
-                name = "Скалолаз",
-                description = "Динамическая планка для кардио и пресса",
-                category = ExerciseCategory.HIIT,
-                difficulty = Difficulty.INTERMEDIATE,
-                muscleGroups = listOf(MuscleGroup.ABS, MuscleGroup.CORE, MuscleGroup.FULL_BODY),
-                calories = 10
-            ),
-            Exercise(
-                id = "v_up",
-                name = "V-складка",
-                description = "Продвинутое упражнение для пресса",
-                category = ExerciseCategory.STRENGTH,
-                difficulty = Difficulty.ADVANCED,
-                muscleGroups = listOf(MuscleGroup.ABS),
-                calories = 8
-            ),
-            Exercise(
-                id = "dead_bug",
-                name = "Мёртвый жук",
-                description = "Упражнение для стабилизации кора",
+                id = "ball_crunch",
+                name = "Скручивания на фитболе",
+                description = "Скручивания для пресса на фитболе",
                 category = ExerciseCategory.STRENGTH,
                 difficulty = Difficulty.BEGINNER,
-                muscleGroups = listOf(MuscleGroup.ABS, MuscleGroup.CORE),
-                calories = 4
+                muscleGroups = listOf(MuscleGroup.ABS),
+                calories = 5,
+                equipment = Equipment.OTHER,
+                isGym = true
+            ),
+            
+            Exercise(
+                id = "treadmill",
+                name = "Беговая дорожка",
+                description = "Кардио упражнение для выносливости",
+                category = ExerciseCategory.CARDIO,
+                difficulty = Difficulty.BEGINNER,
+                muscleGroups = listOf(MuscleGroup.FULL_BODY, MuscleGroup.QUADRICEPS, MuscleGroup.CALVES),
+                calories = 12,
+                equipment = Equipment.MACHINE,
+                isGym = true
+            ),
+            Exercise(
+                id = "bike",
+                name = "Велотренажёр",
+                description = "Кардио упражнение на велотренажёре",
+                category = ExerciseCategory.CARDIO,
+                difficulty = Difficulty.BEGINNER,
+                muscleGroups = listOf(MuscleGroup.QUADRICEPS, MuscleGroup.CALVES),
+                calories = 10,
+                equipment = Equipment.MACHINE,
+                isGym = true
+            ),
+            Exercise(
+                id = "rowing_machine",
+                name = "Гребной тренажёр",
+                description = "Кардио упражнение на гребном тренажёре",
+                category = ExerciseCategory.CARDIO,
+                difficulty = Difficulty.INTERMEDIATE,
+                muscleGroups = listOf(MuscleGroup.FULL_BODY, MuscleGroup.BACK, MuscleGroup.QUADRICEPS, MuscleGroup.HAMSTRINGS),
+                calories = 14,
+                equipment = Equipment.MACHINE,
+                isGym = true
+            ),
+            Exercise(
+                id = "jump_rope",
+                name = "Скакалка",
+                description = "Кардио упражнение для координации",
+                category = ExerciseCategory.CARDIO,
+                difficulty = Difficulty.BEGINNER,
+                muscleGroups = listOf(MuscleGroup.FULL_BODY, MuscleGroup.CALVES),
+                calories = 11,
+                equipment = Equipment.OTHER,
+                isGym = false
             ),
             Exercise(
                 id = "burpee",
@@ -294,141 +559,20 @@ class ExerciseRepository : IExerciseRepository {
                 difficulty = Difficulty.INTERMEDIATE,
                 muscleGroups = listOf(MuscleGroup.FULL_BODY),
                 calories = 15,
-                instructions = listOf(
-                    "Из положения стоя присядьте",
-                    "Прыжком примите упор лёжа",
-                    "Выполните отжимание (опционально)",
-                    "Прыжком вернитесь в присед",
-                    "Выпрыгните вверх с поднятыми руками"
-                )
+                equipment = Equipment.BODYWEIGHT,
+                isGym = false
             ),
             Exercise(
-                id = "jumping_jacks",
-                name = "Прыжки с разведением",
-                description = "Кардио упражнение для разминки",
+                id = "running",
+                name = "Бег",
+                description = "Кардио упражнение для выносливости",
                 category = ExerciseCategory.CARDIO,
                 difficulty = Difficulty.BEGINNER,
-                muscleGroups = listOf(MuscleGroup.FULL_BODY),
-                calories = 8
-            ),
-            Exercise(
-                id = "high_knees",
-                name = "Бег с высоким подъёмом колен",
-                description = "Интенсивное кардио на месте",
-                category = ExerciseCategory.CARDIO,
-                difficulty = Difficulty.BEGINNER,
-                muscleGroups = listOf(MuscleGroup.QUADRICEPS, MuscleGroup.ABS),
-                calories = 10
-            ),
-            Exercise(
-                id = "butt_kicks",
-                name = "Бег с захлёстом",
-                description = "Бег на месте с касанием пятками ягодиц",
-                category = ExerciseCategory.CARDIO,
-                difficulty = Difficulty.BEGINNER,
-                muscleGroups = listOf(MuscleGroup.HAMSTRINGS, MuscleGroup.CALVES),
-                calories = 9
-            ),
-            Exercise(
-                id = "box_jump",
-                name = "Запрыгивания на тумбу",
-                description = "Плиометрическое упражнение для ног",
-                category = ExerciseCategory.HIIT,
-                difficulty = Difficulty.INTERMEDIATE,
-                muscleGroups = listOf(MuscleGroup.QUADRICEPS, MuscleGroup.GLUTES, MuscleGroup.CALVES),
-                calories = 12
-            ),
-            Exercise(
-                id = "skater_jump",
-                name = "Конькобежец",
-                description = "Прыжки в сторону для координации",
-                category = ExerciseCategory.HIIT,
-                difficulty = Difficulty.INTERMEDIATE,
-                muscleGroups = listOf(MuscleGroup.GLUTES, MuscleGroup.QUADRICEPS),
-                calories = 11
-            ),
-            Exercise(
-                id = "tuck_jump",
-                name = "Прыжки с подтягиванием колен",
-                description = "Взрывные прыжки вверх",
-                category = ExerciseCategory.HIIT,
-                difficulty = Difficulty.ADVANCED,
-                muscleGroups = listOf(MuscleGroup.QUADRICEPS, MuscleGroup.ABS),
-                calories = 14
-            ),
-            Exercise(
-                id = "tricep_dip",
-                name = "Обратные отжимания",
-                description = "Отжимания от опоры для трицепсов",
-                category = ExerciseCategory.STRENGTH,
-                difficulty = Difficulty.BEGINNER,
-                muscleGroups = listOf(MuscleGroup.TRICEPS, MuscleGroup.SHOULDERS),
-                calories = 6
-            ),
-            Exercise(
-                id = "dip",
-                name = "Отжимания на брусьях",
-                description = "Классическое упражнение для трицепсов и груди",
-                category = ExerciseCategory.CALISTHENICS,
-                difficulty = Difficulty.INTERMEDIATE,
-                muscleGroups = listOf(MuscleGroup.TRICEPS, MuscleGroup.CHEST, MuscleGroup.SHOULDERS),
-                calories = 9
-            ),
-            Exercise(
-                id = "shoulder_tap",
-                name = "Касания плеч в планке",
-                description = "Планка с поочерёдным касанием плеч",
-                category = ExerciseCategory.STRENGTH,
-                difficulty = Difficulty.INTERMEDIATE,
-                muscleGroups = listOf(MuscleGroup.SHOULDERS, MuscleGroup.CORE),
-                calories = 6
-            ),
-            Exercise(
-                id = "arm_circles",
-                name = "Круговые вращения руками",
-                description = "Разминочное упражнение для плеч",
-                category = ExerciseCategory.FLEXIBILITY,
-                difficulty = Difficulty.BEGINNER,
-                muscleGroups = listOf(MuscleGroup.SHOULDERS),
-                calories = 2
-            ),
-            Exercise(
-                id = "cobra_stretch",
-                name = "Поза кобры",
-                description = "Растяжка для спины и пресса",
-                category = ExerciseCategory.FLEXIBILITY,
-                difficulty = Difficulty.BEGINNER,
-                muscleGroups = listOf(MuscleGroup.ABS, MuscleGroup.BACK),
-                calories = 2
-            ),
-            Exercise(
-                id = "child_pose",
-                name = "Поза ребёнка",
-                description = "Расслабляющая растяжка для спины",
-                category = ExerciseCategory.YOGA,
-                difficulty = Difficulty.BEGINNER,
-                muscleGroups = listOf(MuscleGroup.BACK),
-                calories = 1
-            ),
-            Exercise(
-                id = "cat_cow",
-                name = "Кошка-корова",
-                description = "Мобильность позвоночника",
-                category = ExerciseCategory.FLEXIBILITY,
-                difficulty = Difficulty.BEGINNER,
-                muscleGroups = listOf(MuscleGroup.BACK, MuscleGroup.ABS),
-                calories = 2
-            ),
-            Exercise(
-                id = "downward_dog",
-                name = "Собака мордой вниз",
-                description = "Классическая поза йоги для всего тела",
-                category = ExerciseCategory.YOGA,
-                difficulty = Difficulty.BEGINNER,
-                muscleGroups = listOf(MuscleGroup.HAMSTRINGS, MuscleGroup.SHOULDERS, MuscleGroup.BACK),
-                calories = 3
+                muscleGroups = listOf(MuscleGroup.FULL_BODY, MuscleGroup.QUADRICEPS, MuscleGroup.CALVES),
+                calories = 12,
+                equipment = Equipment.BODYWEIGHT,
+                isGym = false
             )
         )
     }
 }
-

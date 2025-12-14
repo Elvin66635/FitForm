@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FitForm AI</string>
+    
+    <string name="nav_home">Главная</string>
+    <string name="nav_exercises">Упражн.</string>
+    <string name="nav_programs">Прогр.</string>
+    <string name="nav_calendar">Календ.</string>
+    <string name="nav_settings">Ещё</string>
+    
+    <string name="common_kcal">ккал</string>
+    <string name="common_all">Все</string>
+    <string name="common_search">Поиск</string>
+    <string name="common_view_all">Все</string>
+    
+    <string name="home_title">Главная</string>
+    <string name="home_greeting">Привет! 👋</string>
+    <string name="home_ready_question">Готов к тренировке?</string>
+    <string name="home_stats">Статистика</string>
+    <string name="home_workouts">На этой неделе</string>
+    <string name="home_calories">Калорий</string>
+    <string name="home_minutes">Минут</string>
+    <string name="home_quick_start">Быстрый старт</string>
+    <string name="home_quick_start_subtitle">Начни тренировку прямо сейчас</string>
+    <string name="home_recommended">Рекомендуемые упражнения</string>
+    <string name="home_programs">Программы тренировок</string>
+    <string name="home_view_all">Все →</string>
+    
+    <!-- Exercise Screen -->
+    <string name="exercise_title">Упражнения</string>
+    <string name="exercise_search_placeholder">Поиск упражнений…</string>
+    <string name="exercise_found">Найдено: %1$d</string>
+    <string name="exercise_filters">Фильтры</string>
+    <string name="exercise_category">Категория</string>
+    <string name="exercise_difficulty">Сложность</string>
+    <string name="exercise_clear_search">Очистить</string>
+    
+    <string name="workout_start">Начать</string>
+    <string name="workout_pause">Пауза</string>
+    <string name="workout_resume">Продолжить</string>
+    <string name="workout_finish">Завершить</string>
+    <string name="workout_exit_title">Завершить тренировку?</string>
+    <string name="workout_exit_message">Ваш прогресс будет потерян.</string>
+    <string name="workout_exit">Выйти</string>
+    <string name="workout_continue">Продолжить</string>
+    <string name="workout_reps">Повторения</string>
+    <string name="workout_accuracy">Точность</string>
+    <string name="workout_calories">Калории</string>
+    <string name="workout_angle">Угол</string>
+    <string name="workout_form">Техника</string>
+    <string name="workout_ready_position">Исходное положение</string>
+    <string name="workout_pose_detected">Поза обнаружена</string>
+    <string name="workout_click_to_add_rep">Нажмите для добавления повторения</string>
+    <string name="workout_camera_development">(Камера в разработке)</string>
+    <string name="workout_position_in_frame">Встаньте в кадр</string>
+    <string name="workout_no_pose">Поза не обнаружена</string>
+    <string name="workout_close">Закрыть</string>
+    <string name="workout_training">Тренировка</string>
+    
+    <string name="camera_permission_title">Разрешение камеры</string>
+    <string name="camera_permission_message">Приложению нужен доступ к камере для анализа техники выполнения упражнений.</string>
+    <string name="camera_permission_allow">Разрешить</string>
+    <string name="camera_permission_deny">Отказать</string>
+    
+    <string name="exercise_instructions">Инструкции</string>
+    <string name="exercise_tips">Советы</string>
+    
+    <string name="workout_completed">Тренировка завершена!</string>
+    <string name="workout_score">Оценка: %1$d</string>
+    <string name="workout_calories_result">Калорий: %1$d</string>
+    
+    <!-- Programs -->
+    <string name="programs_title">Программы</string>
+    <string name="programs_free">Бесплатные</string>
+    <string name="programs_premium">PRO</string>
+    <string name="programs_start">Начать программу</string>
+    <string name="programs_weeks_short">%1$d нед.</string>
+    <string name="programs_workouts_per_week_short">%1$d тр./нед.</string>
+    <string name="programs_create">Создать программу</string>
+    <string name="programs_get_pro_access">🚀 Получите PRO доступ</string>
+    <string name="programs_pro_description">Разблокируйте все программы и функции</string>
+    <string name="programs_more">Подробнее</string>
+    <string name="programs_weeks">%1$d нед.</string>
+    <string name="programs_workouts_per_week">%1$d тр./нед.</string>
+    
+    <string name="category_strength">Сила</string>
+    <string name="category_cardio">Кардио</string>
+    <string name="category_hiit">HIIT</string>
+    <string name="category_yoga">Йога</string>
+    <string name="category_calisthenics">Калистеника</string>
+    <string name="category_crossfit">Кроссфит</string>
+    <string name="category_flexibility">Гибкость</string>
+    
+    <string name="difficulty_beginner">Начинающий</string>
+    <string name="difficulty_intermediate">Средний</string>
+    <string name="difficulty_advanced">Продвинутый</string>
+    
+    <string name="muscle_group_chest">Грудь</string>
+    <string name="muscle_group_back">Спина</string>
+    <string name="muscle_group_shoulders">Плечи</string>
+    <string name="muscle_group_biceps">Бицепс</string>
+    <string name="muscle_group_triceps">Трицепс</string>
+    <string name="muscle_group_abs">Пресс</string>
+    <string name="muscle_group_legs">Ноги</string>
+    <string name="muscle_group_full_body">Всё тело</string>
+    
+    <!-- Calendar -->
+    <string name="calendar_title">Календарь</string>
+    <string name="calendar_workout">Тренировка</string>
+    <string name="calendar_select_day">Выберите день</string>
+    <string name="calendar_select_day_description">Нажмите на день в календаре, чтобы увидеть детали тренировок</string>
+    <string name="calendar_today">Сегодня</string>
+    
+    <string name="settings_title">Настройки</string>
+    <string name="settings_guest">Гость</string>
+    <string name="settings_login_for_sync">Войти для синхронизации</string>
+    <string name="settings_unlock_all_features">Разблокировать все функции</string>
+    <string name="settings_buy">Купить</string>
+    <string name="settings_workouts">Тренировки</string>
+    <string name="settings_sounds">Звуки</string>
+    <string name="settings_sound_prompts">Звуковые подсказки во время тренировки</string>
+    <string name="settings_sounds_description">Включить звуковые эффекты</string>
+    <string name="settings_vibration">Вибрация</string>
+    <string name="settings_vibration_description">Включить вибрацию</string>
+    <string name="settings_notifications">Уведомления</string>
+    <string name="settings_push_notifications">Push-уведомления</string>
+    <string name="settings_push_notifications_description">Получать напоминания о тренировках</string>
+    <string name="settings_reminder_schedule">Расписание напоминаний</string>
+    <string name="settings_reminder_schedule_description">Настроить время уведомлений</string>
+    <string name="settings_data">Данные</string>
+    <string name="settings_statistics">Статистика</string>
+    <string name="settings_statistics_description">Подробная статистика тренировок</string>
+    <string name="settings_synchronization">Синхронизация</string>
+    <string name="settings_synchronization_description">Резервное копирование данных</string>
+    <string name="settings_clear_data">Очистить данные</string>
+    <string name="settings_clear_data_description">Удалить историю тренировок</string>
+    <string name="settings_about">О приложении</string>
+    <string name="settings_version">Версия</string>
+    <string name="settings_version_number">1.0.0</string>
+    <string name="settings_privacy_policy">Политика конфиденциальности</string>
+    <string name="settings_terms_of_use">Условия использования</string>
+    <string name="settings_support">Поддержка</string>
+    <string name="settings_support_description">Связаться с нами</string>
+    <string name="settings_made_with_love">Сделано с ❤️ для вашего здоровья</string>
+    
+    <string name="exercise_pushup_name">Отжимания</string>
+    <string name="exercise_pushup_description">Классическое упражнение для груди и трицепсов</string>
+    
+    <string name="exercise_diamond_pushup_name">Алмазные отжимания</string>
+    <string name="exercise_diamond_pushup_description">Отжимания с узкой постановкой рук для трицепсов</string>
+    
+    <string name="exercise_wide_pushup_name">Широкие отжимания</string>
+    <string name="exercise_wide_pushup_description">Отжимания с широкой постановкой рук для груди</string>
+    
+    <string name="exercise_pike_pushup_name">Отжимания уголком</string>
+    <string name="exercise_pike_pushup_description">Отжимания для плеч с поднятым тазом</string>
+    
+    <string name="exercise_decline_pushup_name">Отжимания с ногами на возвышении</string>
+    <string name="exercise_decline_pushup_description">Усложнённые отжимания для верхней части груди</string>
+    
+    <string name="exercise_pullup_name">Подтягивания</string>
+    <string name="exercise_pullup_description">Базовое упражнение для спины и бицепсов</string>
+    
+    <string name="exercise_chin_up_name">Подтягивания обратным хватом</string>
+    <string name="exercise_chin_up_description">Подтягивания с акцентом на бицепс</string>
+    
+    <string name="exercise_inverted_row_name">Австралийские подтягивания</string>
+    <string name="exercise_inverted_row_description">Горизонтальные подтягивания для начинающих</string>
+    
+    <string name="exercise_superman_name">Супермен</string>
+    <string name="exercise_superman_description">Упражнение для нижней части спины</string>
+    
+    <string name="exercise_squat_name">Приседания</string>
+    <string name="exercise_squat_description">Базовое упражнение для ног</string>
+    
+    <string name="exercise_squat_jump_name">Приседания с прыжком</string>
+    <string name="exercise_squat_jump_description">Взрывное упражнение для ног</string>
+    
+    <string name="exercise_lunge_name">Выпады</string>
+    <string name="exercise_lunge_description">Упражнение для ног и баланса</string>
+    
+    <string name="exercise_walking_lunge_name">Шагающие выпады</string>
+    <string name="exercise_walking_lunge_description">Динамичные выпады с продвижением</string>
+    
+    <string name="exercise_bulgarian_split_squat_name">Болгарские выпады</string>
+    <string name="exercise_bulgarian_split_squat_description">Выпады с задней ногой на возвышении</string>
+    
+    <string name="exercise_calf_raise_name">Подъём на носки</string>
+    <string name="exercise_calf_raise_description">Изолированное упражнение для икр</string>
+    
+    <string name="exercise_wall_sit_name">Стульчик у стены</string>
+    <string name="exercise_wall_sit_description">Статическое упражнение для ног</string>
+    
+    <string name="exercise_glute_bridge_name">Ягодичный мост</string>
+    <string name="exercise_glute_bridge_description">Упражнение для ягодиц</string>
+    
+    <string name="exercise_plank_name">Планка</string>
+    <string name="exercise_plank_description">Статическое упражнение для кора</string>
+    
+    <string name="exercise_side_plank_name">Боковая планка</string>
+    <string name="exercise_side_plank_description">Планка для косых мышц</string>
+    
+    <string name="exercise_crunch_name">Скручивания</string>
+    <string name="exercise_crunch_description">Базовое упражнение для пресса</string>
+    
+    <string name="exercise_bicycle_crunch_name">Велосипед</string>
+    <string name="exercise_bicycle_crunch_description">Скручивания с вращением для косых мышц</string>
+    
+    <string name="exercise_leg_raise_name">Подъём ног лёжа</string>
+    <string name="exercise_leg_raise_description">Упражнение для нижней части пресса</string>
+    
+    <string name="exercise_russian_twist_name">Русские скручивания</string>
+    <string name="exercise_russian_twist_description">Упражнение для косых мышц</string>
+    
+    <string name="exercise_mountain_climber_name">Скалолаз</string>
+    <string name="exercise_mountain_climber_description">Динамическая планка для кардио и пресса</string>
+    
+    <string name="exercise_v_up_name">V-складка</string>
+    <string name="exercise_v_up_description">Продвинутое упражнение для пресса</string>
+    
+    <string name="exercise_dead_bug_name">Мёртвый жук</string>
+    <string name="exercise_dead_bug_description">Упражнение для стабилизации кора</string>
+    
+    <string name="exercise_burpee_name">Бёрпи</string>
+    <string name="exercise_burpee_description">Комплексное упражнение на всё тело</string>
+    
+    <string name="exercise_jumping_jacks_name">Прыжки с разведением</string>
+    <string name="exercise_jumping_jacks_description">Кардио упражнение для разминки</string>
+    
+    <string name="exercise_high_knees_name">Бег с высоким подъёмом колен</string>
+    <string name="exercise_high_knees_description">Интенсивное кардио на месте</string>
+    
+    <string name="exercise_butt_kicks_name">Бег с захлёстом</string>
+    <string name="exercise_butt_kicks_description">Бег на месте с касанием пятками ягодиц</string>
+    
+    <string name="exercise_box_jump_name">Запрыгивания на тумбу</string>
+    <string name="exercise_box_jump_description">Плиометрическое упражнение для ног</string>
+    
+    <string name="exercise_skater_jump_name">Конькобежец</string>
+    <string name="exercise_skater_jump_description">Прыжки в сторону для координации</string>
+    
+    <string name="exercise_tuck_jump_name">Прыжки с подтягиванием колен</string>
+    <string name="exercise_tuck_jump_description">Взрывные прыжки вверх</string>
+    
+    <string name="exercise_tricep_dip_name">Обратные отжимания</string>
+    <string name="exercise_tricep_dip_description">Отжимания от опоры для трицепсов</string>
+    
+    <string name="exercise_dip_name">Отжимания на брусьях</string>
+    <string name="exercise_dip_description">Классическое упражнение для трицепсов и груди</string>
+    
+    <string name="exercise_shoulder_tap_name">Касания плеч в планке</string>
+    <string name="exercise_shoulder_tap_description">Планка с поочерёдным касанием плеч</string>
+    
+    <string name="exercise_arm_circles_name">Круговые вращения руками</string>
+    <string name="exercise_arm_circles_description">Разминочное упражнение для плеч</string>
+    
+    <string name="exercise_cobra_stretch_name">Поза кобры</string>
+    <string name="exercise_cobra_stretch_description">Растяжка для спины и пресса</string>
+    
+    <string name="exercise_child_pose_name">Поза ребёнка</string>
+    <string name="exercise_child_pose_description">Расслабляющая растяжка для спины</string>
+    
+    <string name="exercise_cat_cow_name">Кошка-корова</string>
+    <string name="exercise_cat_cow_description">Мобильность позвоночника</string>
+    
+    <string name="exercise_downward_dog_name">Собака мордой вниз</string>
+    <string name="exercise_downward_dog_description">Классическая поза йоги для всего тела</string>
+</resources>
+
+
+
