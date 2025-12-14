@@ -1,18 +1,40 @@
 package com.fitform.ai.data.repository
 
+import android.content.Context
 import com.fitform.ai.domain.model.*
 import com.fitform.ai.domain.repository.IProgramRepository
+import com.fitform.ai.ui.resources.ProgramDataLoader
+import com.fitform.ai.ui.resources.ProgramId
+import java.util.Locale
 
-class ProgramRepository : IProgramRepository {
+class ProgramRepository(private val context: Context) : IProgramRepository {
     
-    override fun getAllPrograms(): List<WorkoutProgram> = defaultPrograms
+    private val programDataLoader = ProgramDataLoader(context)
+    private val language: String = Locale.getDefault().language
     
-    override fun getProgramById(id: String): WorkoutProgram? = defaultPrograms.find { it.id == id }
+    private fun localizeProgram(program: WorkoutProgram): WorkoutProgram {
+        val programId = ProgramId.values().find { it.id == program.id }
+        return if (programId != null) {
+            program.copy(
+                name = programDataLoader.getProgramName(programId, language).takeIf { it.isNotEmpty() } ?: program.name,
+                description = programDataLoader.getProgramDescription(programId, language).takeIf { it.isNotEmpty() } ?: program.description
+            )
+        } else {
+            program
+        }
+    }
+    
+    override fun getAllPrograms(): List<WorkoutProgram> = 
+        defaultPrograms.map { localizeProgram(it) }
+    
+    override fun getProgramById(id: String): WorkoutProgram? = 
+        defaultPrograms.find { it.id == id }?.let { localizeProgram(it) }
     
     override fun getProgramsByCategory(category: ExerciseCategory): List<WorkoutProgram> =
-        defaultPrograms.filter { it.category == category }
+        defaultPrograms.filter { it.category == category }.map { localizeProgram(it) }
     
-    override fun getFreePrograms(): List<WorkoutProgram> = defaultPrograms.filter { !it.isPremium }
+    override fun getFreePrograms(): List<WorkoutProgram> = 
+        defaultPrograms.filter { !it.isPremium }.map { localizeProgram(it) }
     
     companion object {
         val defaultPrograms = listOf(
@@ -243,4 +265,3 @@ class ProgramRepository : IProgramRepository {
         )
     }
 }
-

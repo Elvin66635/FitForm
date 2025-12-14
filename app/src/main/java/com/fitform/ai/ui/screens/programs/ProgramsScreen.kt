@@ -19,6 +19,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import com.fitform.ai.R
 import com.fitform.ai.domain.model.*
 import com.fitform.ai.ui.theme.*
 import com.fitform.ai.ui.util.*
@@ -34,6 +36,7 @@ fun ProgramsScreen(
     val freePrograms by viewModel.freePrograms.collectAsState()
     val premiumPrograms by viewModel.premiumPrograms.collectAsState()
     val selectedTab by viewModel.selectedTab.collectAsState()
+    val context = LocalContext.current
     
     Column(
         modifier = Modifier
@@ -43,7 +46,7 @@ fun ProgramsScreen(
         TopAppBar(
             title = {
                 Text(
-                    text = "Программы",
+                    text = context.getString(R.string.programs_title),
                     fontWeight = FontWeight.Bold
                 )
             },
@@ -55,7 +58,7 @@ fun ProgramsScreen(
                 IconButton(onClick = onCreateProgram) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Создать программу",
+                        contentDescription = context.getString(R.string.programs_create),
                         tint = Primary
                     )
                 }
@@ -77,7 +80,7 @@ fun ProgramsScreen(
                 onClick = { viewModel.setSelectedTab(0) },
                 text = {
                     Text(
-                        text = "Бесплатные",
+                        text = context.getString(R.string.programs_free),
                         color = if (selectedTab == 0) Primary else TextSecondary
                     )
                 }
@@ -97,7 +100,7 @@ fun ProgramsScreen(
                             modifier = Modifier.size(16.dp)
                         )
                         Text(
-                            text = "PRO",
+                            text = context.getString(R.string.programs_premium),
                             color = if (selectedTab == 1) Primary else TextSecondary
                         )
                     }
@@ -164,6 +167,7 @@ private fun ProgramCard(
     program: WorkoutProgram,
     onClick: () -> Unit
 ) {
+    val context = LocalContext.current
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -187,7 +191,7 @@ private fun ProgramCard(
                             .padding(horizontal = 10.dp, vertical = 4.dp)
                     ) {
                         Text(
-                            text = getCategoryName(program.category),
+                            text = getCategoryName(context, program.category),
                             fontSize = 12.sp,
                             color = getCategoryColor(program.category),
                             fontWeight = FontWeight.Medium
@@ -232,17 +236,17 @@ private fun ProgramCard(
             ) {
                 ProgramStat(
                     icon = Icons.Default.CalendarMonth,
-                    value = "${program.durationWeeks} нед.",
+                    value = context.getString(com.fitform.ai.R.string.programs_weeks_short, program.durationWeeks),
                     color = Primary
                 )
                 ProgramStat(
                     icon = Icons.Default.FitnessCenter,
-                    value = "${program.workoutsPerWeek} тр./нед.",
+                    value = context.getString(com.fitform.ai.R.string.programs_workouts_per_week_short, program.workoutsPerWeek),
                     color = Secondary
                 )
                 ProgramStat(
                     icon = Icons.Default.TrendingUp,
-                    value = getDifficultyName(program.difficulty),
+                    value = getDifficultyName(context, program.difficulty),
                     color = getDifficultyColor(program.difficulty)
                 )
             }
@@ -256,7 +260,7 @@ private fun ProgramCard(
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
-                    text = "Начать программу",
+                    text = context.getString(com.fitform.ai.R.string.programs_start),
                     fontWeight = FontWeight.SemiBold
                 )
             }
@@ -269,6 +273,7 @@ private fun PremiumProgramCard(
     program: WorkoutProgram,
     onClick: () -> Unit
 ) {
+    val context = LocalContext.current
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -307,7 +312,7 @@ private fun PremiumProgramCard(
                                     .padding(horizontal = 10.dp, vertical = 4.dp)
                             ) {
                                 Text(
-                                    text = "⭐ PRO",
+                                    text = "⭐ ${context.getString(com.fitform.ai.R.string.programs_premium)}",
                                     fontSize = 12.sp,
                                     color = Accent,
                                     fontWeight = FontWeight.Bold
@@ -347,12 +352,12 @@ private fun PremiumProgramCard(
                 ) {
                     ProgramStat(
                         icon = Icons.Default.CalendarMonth,
-                        value = "${program.durationWeeks} нед.",
+                        value = context.getString(com.fitform.ai.R.string.programs_weeks_short, program.durationWeeks),
                         color = Primary
                     )
                     ProgramStat(
                         icon = Icons.Default.FitnessCenter,
-                        value = "${program.workoutsPerWeek} тр./нед.",
+                        value = context.getString(com.fitform.ai.R.string.programs_workouts_per_week_short, program.workoutsPerWeek),
                         color = Secondary
                     )
                 }
@@ -386,6 +391,7 @@ private fun PremiumProgramCard(
 
 @Composable
 private fun PremiumBanner() {
+    val context = LocalContext.current
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
@@ -408,14 +414,14 @@ private fun PremiumBanner() {
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = "🚀 Получите PRO доступ",
+                        text = context.getString(com.fitform.ai.R.string.programs_get_pro_access),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Разблокируйте все программы и функции",
+                        text = context.getString(com.fitform.ai.R.string.programs_pro_description),
                         fontSize = 14.sp,
                         color = Color.White.copy(alpha = 0.9f)
                     )
@@ -430,7 +436,7 @@ private fun PremiumBanner() {
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
-                        text = "Подробнее",
+                        text = context.getString(com.fitform.ai.R.string.programs_more),
                         fontWeight = FontWeight.SemiBold
                     )
                 }

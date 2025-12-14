@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.fitform.ai.domain.model.*
 import com.fitform.ai.domain.repository.IExerciseRepository
 import com.fitform.ai.domain.usecase.SaveWorkoutSessionUseCase
+import com.fitform.ai.ui.screens.workout.pose.PoseAnalyzer
+import com.google.mlkit.vision.pose.Pose
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,8 +47,18 @@ class WorkoutViewModel(
     private val _countdown = MutableStateFlow(0)
     val countdown: StateFlow<Int> = _countdown.asStateFlow()
     
+    private val _currentAngle = MutableStateFlow(0f)
+    val currentAngle: StateFlow<Float> = _currentAngle.asStateFlow()
+    
+    private val _poseFeedback = MutableStateFlow("")
+    val poseFeedback: StateFlow<String> = _poseFeedback.asStateFlow()
+    
+    private val _isPoseDetected = MutableStateFlow(false)
+    val isPoseDetected: StateFlow<Boolean> = _isPoseDetected.asStateFlow()
+    
     private var timerJob: Job? = null
     private var startTime: Long = 0
+    private val poseAnalyzer = PoseAnalyzer(exerciseId)
     
     init {
         loadExercise()
@@ -71,12 +83,46 @@ class WorkoutViewModel(
         _workoutState.value = WorkoutState.ACTIVE
         _countdown.value = 0
         startTime = System.currentTimeMillis()
+        poseAnalyzer.reset()
         
         timerJob = viewModelScope.launch {
             while (true) {
                 delay(1000)
                 _elapsedTime.value = ((System.currentTimeMillis() - startTime) / 1000).toInt()
             }
+        }
+    }
+    
+    fun analyzePose(pose: Pose?) {
+        if (pose == null || _workoutState.value != WorkoutState.ACTIVE) {
+            _isPoseDetected.value = false
+            _poseFeedback.value = "" // Will be localized in UI
+            return
+        }
+        
+        val result = poseAnalyzer.analyzePose(pose)
+        
+        _isPoseDetected.value = true
+        _currentAngle.value = result.currentAngle
+        _poseFeedback.value = result.feedback
+        _currentScore.value = result.formScore
+        
+        if (result.repDetected) {
+            _currentReps.value++
+            val exercise = _exercise.value ?: return
+            _calories.value = (_currentReps.value * exercise.calories) / 10
+            
+            val feedbackType = when {
+                result.formScore >= 90 -> FeedbackType.PERFECT
+                result.formScore >= 70 -> FeedbackType.GOOD
+                else -> FeedbackType.CORRECT_FORM
+            }
+            showFeedback(feedbackType, result.feedback)
+        }
+        
+        if (result.issues.isNotEmpty() && result.formScore < 70) {
+            val issue = result.issues.first()
+            showFeedback(FeedbackType.GOOD, issue.description)
         }
     }
     

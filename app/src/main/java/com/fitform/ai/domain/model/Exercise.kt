@@ -10,12 +10,24 @@ data class Exercise(
     val difficulty: Difficulty,
     val muscleGroups: List<MuscleGroup>,
     val calories: Int,
+    val equipment: Equipment = Equipment.BODYWEIGHT,
+    val isGym: Boolean = false,
     val videoUrl: String? = null,
     val imageUrl: String? = null,
     val instructions: List<String> = emptyList(),
     val tips: List<String> = emptyList(),
     val isPremium: Boolean = false
 )
+
+enum class Equipment {
+    BARBELL,
+    DUMBBELLS,
+    MACHINE,
+    BODYWEIGHT,
+    CABLE,
+    SMITH_MACHINE,
+    OTHER
+}
 
 enum class ExerciseCategory {
     STRENGTH,

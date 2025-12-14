@@ -23,6 +23,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -40,6 +42,7 @@ import androidx.navigation.navArgument
 import com.fitform.ai.ui.screens.calendar.CalendarScreen
 import com.fitform.ai.ui.screens.exercise.ExerciseListScreen
 import com.fitform.ai.ui.screens.home.HomeScreen
+import com.fitform.ai.ui.screens.programs.ProgramDetailScreen
 import com.fitform.ai.ui.screens.programs.ProgramsScreen
 import com.fitform.ai.ui.screens.result.ResultScreen
 import com.fitform.ai.ui.screens.settings.SettingsScreen
@@ -52,6 +55,9 @@ sealed class Screen(val route: String) {
     object Home : Screen("home")
     object Exercises : Screen("exercises")
     object Programs : Screen("programs")
+    object ProgramDetail : Screen("program/{programId}") {
+        fun createRoute(programId: String) = "program/$programId"
+    }
     object Calendar : Screen("calendar")
     object Settings : Screen("settings")
     object Workout : Screen("workout/{exerciseId}") {
@@ -70,17 +76,17 @@ data class BottomNavItem(
     val unselectedIcon: ImageVector
 )
 
-val bottomNavItems = listOf(
-    BottomNavItem("Главная", Screen.Home.route, Icons.Filled.Home, Icons.Outlined.Home),
-    BottomNavItem("Упражн.", Screen.Exercises.route, Icons.Filled.FitnessCenter, Icons.Outlined.FitnessCenter),
-    BottomNavItem("Прогр.", Screen.Programs.route, Icons.Filled.List, Icons.Outlined.List),
-    BottomNavItem("Календ.", Screen.Calendar.route, Icons.Filled.CalendarMonth, Icons.Outlined.CalendarMonth),
-    BottomNavItem("Ещё", Screen.Settings.route, Icons.Filled.MoreHoriz, Icons.Outlined.MoreHoriz)
+fun getBottomNavItems(context: android.content.Context): List<BottomNavItem> = listOf(
+    BottomNavItem(context.getString(com.fitform.ai.R.string.nav_home), Screen.Home.route, Icons.Filled.Home, Icons.Outlined.Home),
+    BottomNavItem(context.getString(com.fitform.ai.R.string.nav_exercises), Screen.Exercises.route, Icons.Filled.FitnessCenter, Icons.Outlined.FitnessCenter),
+    BottomNavItem(context.getString(com.fitform.ai.R.string.nav_programs), Screen.Programs.route, Icons.Filled.List, Icons.Outlined.List),
+    BottomNavItem(context.getString(com.fitform.ai.R.string.nav_calendar), Screen.Calendar.route, Icons.Filled.CalendarMonth, Icons.Outlined.CalendarMonth),
+    BottomNavItem(context.getString(com.fitform.ai.R.string.nav_settings), Screen.Settings.route, Icons.Filled.MoreHoriz, Icons.Outlined.MoreHoriz)
 )
 
 private val routesWithoutBottomBar = listOf(
-    "workout",
-    "result"
+    "workout/",
+    "result/"
 )
 
 @Composable
@@ -154,8 +160,28 @@ fun FitFormNavigation() {
             
             composable(Screen.Programs.route) {
                 ProgramsScreen(
-                    onProgramClick = { },
+                    onProgramClick = { programId ->
+                        navController.navigate(Screen.ProgramDetail.createRoute(programId))
+                    },
                     onCreateProgram = { }
+                )
+            }
+            
+            composable(
+                route = Screen.ProgramDetail.route,
+                arguments = listOf(
+                    navArgument("programId") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val programId = backStackEntry.arguments?.getString("programId") ?: ""
+                ProgramDetailScreen(
+                    programId = programId,
+                    onStartWorkout = { exerciseId ->
+                        navController.navigate(Screen.Workout.createRoute(exerciseId))
+                    },
+                    onBack = {
+                        navController.popBackStack()
+                    }
                 )
             }
             
@@ -218,8 +244,10 @@ fun FitFormNavigation() {
 
 @Composable
 fun FitFormBottomBar(navController: NavHostController) {
+    val context = LocalContext.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+    val bottomNavItems = remember(context) { getBottomNavItems(context) }
     
     NavigationBar(
         containerColor = Background,

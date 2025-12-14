@@ -21,6 +21,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import com.fitform.ai.R
 import com.fitform.ai.domain.model.*
 import com.fitform.ai.ui.theme.*
 import com.fitform.ai.ui.util.*
@@ -45,11 +47,12 @@ fun ExerciseListScreen(
             .fillMaxSize()
             .background(Background)
     ) {
-        // Top Bar
+        val context = LocalContext.current
+        
         TopAppBar(
             title = {
                 Text(
-                    text = "Упражнения",
+                    text = context.getString(R.string.exercise_title),
                     fontWeight = FontWeight.Bold
                 )
             },
@@ -61,14 +64,13 @@ fun ExerciseListScreen(
                 IconButton(onClick = { showFilters = !showFilters }) {
                     Icon(
                         imageVector = Icons.Default.FilterList,
-                        contentDescription = "Фильтры",
+                        contentDescription = context.getString(R.string.exercise_filters),
                         tint = if (selectedCategory != null || selectedDifficulty != null) Primary else TextSecondary
                     )
                 }
             }
         )
         
-        // Search Bar
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { viewModel.setSearchQuery(it) },
@@ -76,7 +78,7 @@ fun ExerciseListScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
             placeholder = {
-                Text("Поиск упражнений...", color = TextHint)
+                Text(context.getString(R.string.exercise_search_placeholder), color = TextHint)
             },
             leadingIcon = {
                 Icon(
@@ -90,7 +92,7 @@ fun ExerciseListScreen(
                     IconButton(onClick = { viewModel.setSearchQuery("") }) {
                         Icon(
                             imageVector = Icons.Default.Clear,
-                            contentDescription = "Очистить",
+                            contentDescription = context.getString(R.string.exercise_clear_search),
                             tint = TextSecondary
                         )
                     }
@@ -109,13 +111,11 @@ fun ExerciseListScreen(
             singleLine = true
         )
         
-        // Filters
         AnimatedVisibility(visible = showFilters) {
             Column(
                 modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // Category filters
                 Text(
                     text = "Категория",
                     fontSize = 14.sp,
@@ -129,7 +129,7 @@ fun ExerciseListScreen(
                     FilterChip(
                         selected = selectedCategory == null,
                         onClick = { viewModel.setCategory(null) },
-                        label = { Text("Все") },
+                        label = { Text(context.getString(R.string.common_all)) },
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = Primary,
                             selectedLabelColor = Color.White
@@ -139,7 +139,7 @@ fun ExerciseListScreen(
                         FilterChip(
                             selected = selectedCategory == category,
                             onClick = { viewModel.setCategory(category) },
-                            label = { Text(getCategoryName(category)) },
+                            label = { Text(getCategoryName(context, category)) },
                             colors = FilterChipDefaults.filterChipColors(
                                 selectedContainerColor = getCategoryColor(category),
                                 selectedLabelColor = Color.White
@@ -148,9 +148,8 @@ fun ExerciseListScreen(
                     }
                 }
                 
-                // Difficulty filters
                 Text(
-                    text = "Сложность",
+                    text = context.getString(R.string.exercise_difficulty),
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
                     color = TextSecondary
@@ -161,7 +160,7 @@ fun ExerciseListScreen(
                     FilterChip(
                         selected = selectedDifficulty == null,
                         onClick = { viewModel.setDifficulty(null) },
-                        label = { Text("Все") },
+                        label = { Text(context.getString(R.string.common_all)) },
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = Primary,
                             selectedLabelColor = Color.White
@@ -171,7 +170,7 @@ fun ExerciseListScreen(
                         FilterChip(
                             selected = selectedDifficulty == difficulty,
                             onClick = { viewModel.setDifficulty(difficulty) },
-                            label = { Text(getDifficultyName(difficulty)) },
+                            label = { Text(getDifficultyName(context, difficulty)) },
                             colors = FilterChipDefaults.filterChipColors(
                                 selectedContainerColor = getDifficultyColor(difficulty),
                                 selectedLabelColor = Color.White
@@ -182,15 +181,13 @@ fun ExerciseListScreen(
             }
         }
         
-        // Exercise count
         Text(
-            text = "Найдено: ${exercises.size}",
+            text = context.getString(R.string.exercise_found, exercises.size),
             fontSize = 14.sp,
             color = TextSecondary,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
         )
         
-        // Exercise List
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(16.dp),
@@ -211,6 +208,7 @@ private fun ExerciseListItem(
     exercise: Exercise,
     onClick: () -> Unit
 ) {
+    val context = LocalContext.current
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -224,7 +222,6 @@ private fun ExerciseListItem(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Category Icon
             Box(
                 modifier = Modifier
                     .size(48.dp)
@@ -256,7 +253,6 @@ private fun ExerciseListItem(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    // Difficulty
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Box(
                             modifier = Modifier
@@ -266,13 +262,12 @@ private fun ExerciseListItem(
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            text = getDifficultyName(exercise.difficulty),
+                            text = getDifficultyName(context, exercise.difficulty),
                             fontSize = 12.sp,
                             color = TextSecondary
                         )
                     }
                     
-                    // Calories
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             imageVector = Icons.Default.LocalFireDepartment,
@@ -282,7 +277,7 @@ private fun ExerciseListItem(
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            text = "${exercise.calories} ккал",
+                            text = "${exercise.calories} ${context.getString(R.string.common_kcal)}",
                             fontSize = 12.sp,
                             color = TextSecondary
                         )
@@ -291,7 +286,6 @@ private fun ExerciseListItem(
                 
                 Spacer(modifier = Modifier.height(6.dp))
                 
-                // Muscle groups
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
@@ -303,7 +297,7 @@ private fun ExerciseListItem(
                                 .padding(horizontal = 8.dp, vertical = 4.dp)
                         ) {
                             Text(
-                                text = getMuscleGroupName(muscle),
+                                text = getMuscleGroupName(context, muscle),
                                 fontSize = 10.sp,
                                 color = TextSecondary
                             )
