@@ -24,6 +24,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.collectAsState
+import kotlinx.coroutines.launch
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,6 +42,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.fitform.ai.ui.screens.auth.AuthScreen
 import com.fitform.ai.ui.screens.calendar.CalendarScreen
 import com.fitform.ai.ui.screens.exercise.ExerciseListScreen
 import com.fitform.ai.ui.screens.home.HomeScreen
@@ -47,11 +51,15 @@ import com.fitform.ai.ui.screens.programs.ProgramsScreen
 import com.fitform.ai.ui.screens.result.ResultScreen
 import com.fitform.ai.ui.screens.settings.SettingsScreen
 import com.fitform.ai.ui.screens.workout.WorkoutScreen
+import com.fitform.ai.domain.repository.IAuthRepository
+import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.getKoin
 import com.fitform.ai.ui.theme.Background
 import com.fitform.ai.ui.theme.Primary
 import com.fitform.ai.ui.theme.TextSecondary
 
 sealed class Screen(val route: String) {
+    object Auth : Screen("auth")
     object Home : Screen("home")
     object Exercises : Screen("exercises")
     object Programs : Screen("programs")
@@ -85,6 +93,7 @@ fun getBottomNavItems(context: android.content.Context): List<BottomNavItem> = l
 )
 
 private val routesWithoutBottomBar = listOf(
+    "auth",
     "workout/",
     "result/"
 )
@@ -96,17 +105,22 @@ fun FitFormNavigation() {
     val currentRoute = navBackStackEntry?.destination?.route
     val showBottomBar = routesWithoutBottomBar.none { currentRoute?.startsWith(it) == true }
     
+    val authRepository: IAuthRepository = getKoin().get<IAuthRepository>()
+    val isAuthenticated by authRepository.isAuthenticated.collectAsState(initial = false)
+    
+    val startDestination = if (isAuthenticated) Screen.Home.route else Screen.Auth.route
+    
     Scaffold(
         containerColor = Background,
         bottomBar = {
-            if (showBottomBar) {
+            if (showBottomBar && isAuthenticated) {
                 FitFormBottomBar(navController = navController)
             }
         }
     ) { paddingValues ->
         NavHost(
             navController = navController,
-            startDestination = Screen.Home.route,
+            startDestination = startDestination,
             modifier = Modifier.padding(paddingValues),
             enterTransition = {
                 slideIntoContainer(
@@ -133,6 +147,16 @@ fun FitFormNavigation() {
                 )
             }
         ) {
+            composable(Screen.Auth.route) {
+                AuthScreen(
+                    onAuthSuccess = {
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Auth.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
+            
             composable(Screen.Home.route) {
                 HomeScreen(
                     onNavigateToExercises = {
@@ -190,7 +214,18 @@ fun FitFormNavigation() {
             }
             
             composable(Screen.Settings.route) {
-                SettingsScreen()
+                val authRepository: IAuthRepository = getKoin().get<IAuthRepository>()
+                val coroutineScope = rememberCoroutineScope()
+                SettingsScreen(
+                    onSignOut = {
+                        navController.navigate(Screen.Auth.route) {
+                            popUpTo(Screen.Home.route) { inclusive = true }
+                        }
+                        coroutineScope.launch {
+                            authRepository.signOut()
+                        }
+                    }
+                )
             }
             composable(
                 route = Screen.Workout.route,
