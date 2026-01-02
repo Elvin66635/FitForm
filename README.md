@@ -14,6 +14,8 @@ FitForm is an intelligent fitness app that uses machine learning to analyze your
 
 - **Kotlin** - primary development language
 - **Jetpack Compose** - modern UI toolkit
+- **Firebase Authentication** - user authentication
+- **Cloud Firestore** - cloud database for syncing progress
 - **Room Database** - local data storage
 - **CameraX** - camera integration
 - **ML Kit Pose Detection** - AI-powered pose analysis
@@ -49,6 +51,18 @@ FitForm is an intelligent fitness app that uses machine learning to analyze your
 - Video instructions
 - Search and filtering
 
+### 🔐 Authentication & Sync
+- Email/Password authentication
+- Google Sign In (optional)
+- Cloud sync of workout progress
+- Cross-device data synchronization
+
+### 🏆 Achievements System
+- Unlock achievements for milestones
+- Track progress towards goals
+- Gamification elements
+- Progress visualization
+
 ## Project Structure
 
 ```
@@ -80,9 +94,17 @@ The project follows **Clean Architecture** principles:
 
 2. Open the project in Android Studio
 
-3. Sync Gradle
+3. **Setup Firebase** (Required):
+   - Create a Firebase project at [Firebase Console](https://console.firebase.google.com/)
+   - Add Android app with package name: `com.fitform.ai`
+   - Download `google-services.json` and place it in `app/` folder
+   - Enable Authentication (Email/Password)
+   - Enable Cloud Firestore Database
+   - See [FIREBASE_SETUP.md](FIREBASE_SETUP.md) for detailed instructions
 
-4. Run the app on an emulator or real device
+4. Sync Gradle
+
+5. Run the app on an emulator or real device
 
 ## Requirements
 

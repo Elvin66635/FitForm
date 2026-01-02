@@ -9,8 +9,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.collectAsState
+import org.koin.compose.getKoin
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,10 +27,16 @@ import com.fitform.ai.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(
+    onSignOut: () -> Unit = {}
+) {
     var soundEnabled by remember { mutableStateOf(true) }
     var vibrationEnabled by remember { mutableStateOf(true) }
     var notificationsEnabled by remember { mutableStateOf(true) }
+    
+    val authRepository: com.fitform.ai.domain.repository.IAuthRepository = 
+        org.koin.compose.getKoin().get()
+    val currentUser by authRepository.currentUser.collectAsState(initial = null)
     
     Column(
         modifier = Modifier
@@ -55,7 +64,10 @@ fun SettingsScreen() {
         ) {
             // Profile Section
             item {
-                ProfileCard()
+                ProfileCard(
+                    user = currentUser,
+                    onSignOut = onSignOut
+                )
             }
             
             // PRO Banner
@@ -180,7 +192,10 @@ fun SettingsScreen() {
 }
 
 @Composable
-private fun ProfileCard() {
+private fun ProfileCard(
+    user: com.fitform.ai.domain.model.User?,
+    onSignOut: () -> Unit
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = Surface),
@@ -211,23 +226,33 @@ private fun ProfileCard() {
             
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "Гость",
+                    text = user?.displayName ?: user?.email ?: "Гость",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = TextPrimary
                 )
                 Text(
-                    text = "Войти для синхронизации",
+                    text = if (user != null) user.email else "Войти для синхронизации",
                     fontSize = 14.sp,
                     color = TextSecondary
                 )
             }
             
-            Icon(
-                imageVector = Icons.Default.ChevronRight,
-                contentDescription = null,
-                tint = TextSecondary
-            )
+            if (user != null) {
+                IconButton(onClick = onSignOut) {
+                    Icon(
+                        imageVector = Icons.Default.ExitToApp,
+                        contentDescription = "Выйти",
+                        tint = Error
+                    )
+                }
+            } else {
+                Icon(
+                    imageVector = Icons.Default.ChevronRight,
+                    contentDescription = null,
+                    tint = TextSecondary
+                )
+            }
         }
     }
 }

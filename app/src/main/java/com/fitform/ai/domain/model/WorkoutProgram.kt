@@ -37,13 +37,17 @@ data class WorkoutExercise(
 
 data class WorkoutSession(
     val id: String = UUID.randomUUID().toString(),
+    val userId: String? = null,
     val programId: String?,
     val workoutId: String?,
+    val exerciseId: String? = null,
     val startTime: Long,
     val endTime: Long? = null,
     val exerciseResults: List<ExerciseResult> = emptyList(),
     val totalScore: Int = 0,
     val caloriesBurned: Int = 0,
+    val reps: Int = 0,
+    val duration: Int = 0,
     val notes: String? = null
 )
 

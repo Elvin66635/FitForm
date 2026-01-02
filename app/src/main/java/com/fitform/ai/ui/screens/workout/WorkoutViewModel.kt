@@ -185,10 +185,13 @@ class WorkoutViewModel(
         val session = WorkoutSession(
             programId = null,
             workoutId = null,
+            exerciseId = exerciseId,
             startTime = startTime,
             endTime = System.currentTimeMillis(),
             totalScore = result.score,
-            caloriesBurned = result.calories
+            caloriesBurned = result.calories,
+            reps = result.reps,
+            duration = result.duration
         )
         saveWorkoutSessionUseCase(session)
         
