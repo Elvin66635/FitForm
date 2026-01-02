@@ -2,15 +2,16 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
-    id("com.google.gms.google-services")
+    // Temporarily disabled until Firebase project is set up
+    // id("com.google.gms.google-services")
 }
 
 android {
-    namespace = "com.fitform.ai"
+    namespace = "com.formsynth.ai"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.fitform.ai"
+        applicationId = "com.formsynth.ai"
         minSdk = 26
         targetSdk = 35
         versionCode = 1
@@ -93,14 +94,15 @@ dependencies {
 
     implementation("com.google.code.gson:gson:2.10.1")
     
-    // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
-    implementation("com.google.firebase:firebase-auth-ktx")
-    implementation("com.google.firebase:firebase-firestore-ktx")
-    implementation("com.google.firebase:firebase-storage-ktx")
+    // Firebase - Temporarily disabled until Firebase project is set up
+    // Uncomment these when Firebase project is configured with package name com.formsynth.ai
+    // implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+    // implementation("com.google.firebase:firebase-auth-ktx")
+    // implementation("com.google.firebase:firebase-firestore-ktx")
+    // implementation("com.google.firebase:firebase-storage-ktx")
     
-    // Google Sign In
-    implementation("com.google.android.gms:play-services-auth:20.7.0")
+    // Google Sign In - Temporarily disabled
+    // implementation("com.google.android.gms:play-services-auth:20.7.0")
 }
 
 

@@ -51,6 +51,11 @@ render.experimental.xml
 
 # Google Services (e.g. APIs or Firebase)
 google-services.json
+*.backup
+
+# Documentation files (internal, not for public repo)
+AUTHENTICATION_SUMMARY.md
+FIREBASE_SETUP.md
 
 # Freeline
 freeline.zip
