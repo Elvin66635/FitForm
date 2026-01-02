@@ -13,7 +13,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "FitForm"
+rootProject.name = "FormSynth"
 include(":app")
 
 

@@ -13,19 +13,19 @@
         android:required="false" />
 
     <application
-        android:name=".FitFormApp"
+        android:name=".FormSynthApp"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@drawable/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.FitForm">
+        android:theme="@style/Theme.FormSynth">
         
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.FitForm">
+            android:theme="@style/Theme.FormSynth">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

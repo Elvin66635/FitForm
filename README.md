@@ -1,10 +1,10 @@
-# FitForm 🏋️‍♂️
+# FormSynth AI 🏋️‍♂️
 
 Android fitness application with AI-powered pose detection and workout tracking.
 
 ## About
 
-FitForm is an intelligent fitness app that uses machine learning to analyze your posture during workouts. The app helps you:
+FormSynth AI is an intelligent fitness app that uses machine learning to analyze your posture during workouts. The app helps you:
 - ✅ Monitor correct exercise execution
 - 📊 Track workout progress
 - 📅 Plan training programs
@@ -66,13 +66,13 @@ FitForm is an intelligent fitness app that uses machine learning to analyze your
 ## Project Structure
 
 ```
-FitForm/
-├── app/src/main/java/com/fitform/ai/
+FormSynth/
+├── app/src/main/java/com/formsynth/ai/
 │   ├── data/          # Data layer (Room, Repository)
 │   ├── domain/        # Domain layer (Use Cases, Models)
 │   ├── ui/            # Presentation layer (Compose UI, ViewModels)
 │   ├── di/            # Dependency Injection (Koin)
-│   ├── FitFormApp.kt  # Application class
+│   ├── FormSynthApp.kt  # Application class
 │   └── MainActivity.kt
 ├── build.gradle.kts
 └── settings.gradle.kts
@@ -89,14 +89,14 @@ The project follows **Clean Architecture** principles:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/Elvin66635/FitForm.git
+   git clone https://github.com/Elvin66635/FormSynth.git
    ```
 
 2. Open the project in Android Studio
 
 3. **Setup Firebase** (Required):
    - Create a Firebase project at [Firebase Console](https://console.firebase.google.com/)
-   - Add Android app with package name: `com.fitform.ai`
+   - Add Android app with package name: `com.formsynth.ai`
    - Download `google-services.json` and place it in `app/` folder
    - Enable Authentication (Email/Password)
    - Enable Cloud Firestore Database
